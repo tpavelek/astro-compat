@@ -1,0 +1,565 @@
+<title>Astro Compat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Karla:wght@400;500;700&display=swap">
+<style>
+/* Layout: tab bar under a compact header; one content column (max 1080px); chart wheel beside its table on desktop, stacked on phones. */
+:root{
+  --bg:#eef0f6; --surface:#ffffff; --surface-2:#f6f7fb; --fg:#1c1f2e; --muted:#5d6279; --line:#d6d9e5;
+  --accent:#5a46a8; --accent-soft:#e9e4f8; --on-accent:#ffffff; --gold:#9a7a1c; --danger:#b3261e;
+  --fire:#d9542c; --earth:#1a9a84; --air:#c9a227; --water:#2f6fc4;
+  --font-display:"Fraunces","Iowan Old Style","Georgia",serif; --font-body:"Karla","Helvetica Neue",Arial,sans-serif;
+  --radius:10px; --shadow:0 1px 2px rgba(20,24,50,.06),0 6px 18px rgba(20,24,50,.06);
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --bg:#0f1225; --surface:#181c33; --surface-2:#1f2440; --fg:#e9e6f5; --muted:#a2a4bf; --line:#2d3253;
+  --accent:#b9a6ff; --accent-soft:#2a2650; --on-accent:#12102a; --gold:#e4c66b; --danger:#ff8a80;
+  --fire:#e0603a; --earth:#2fa58e; --air:#b09230; --water:#5b93ea; --shadow:none; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0f1225; --surface:#181c33; --surface-2:#1f2440; --fg:#e9e6f5; --muted:#a2a4bf; --line:#2d3253;
+  --accent:#b9a6ff; --accent-soft:#2a2650; --on-accent:#12102a; --gold:#e4c66b; --danger:#ff8a80;
+  --fire:#e0603a; --earth:#2fa58e; --air:#b09230; --water:#5b93ea; --shadow:none; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15.5px;line-height:1.5;margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:16px;padding-block:12px 48px}
+h1,h2,h3{font-family:var(--font-display);font-weight:600;line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:1.9rem;letter-spacing:-.01em}
+h2{font-size:1.35rem}
+h3{font-size:1.05rem}
+p{margin:0}
+button{font:inherit;cursor:pointer}
+a{color:var(--accent)}
+.muted{color:var(--muted)}
+.small{font-size:.86rem}
+.num{font-variant-numeric:tabular-nums}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+header.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-block:8px 14px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .mark{width:44px;height:44px;flex:none}
+.brand p{font-size:.9rem;color:var(--muted)}
+.lang{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--surface)}
+.lang button{border:0;background:transparent;color:var(--muted);padding:6px 14px;font-weight:700;letter-spacing:.04em;font-size:.82rem}
+.lang button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+
+nav.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none;margin-bottom:18px}
+nav.tabs button{border:0;background:transparent;color:var(--muted);padding:10px 14px;font-weight:700;border-bottom:2px solid transparent;white-space:nowrap;margin-bottom:-1px}
+nav.tabs button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--accent)}
+
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:6px 12px;display:inline-flex;align-items:center;gap:8px;font-weight:500}
+.chip[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.chip .dot{width:9px;height:9px;border-radius:50%;flex:none}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media (max-width:760px){.grid-2{grid-template-columns:1fr}}
+.stack{display:flex;flex-direction:column;gap:18px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:8px;padding:8px 14px;font-weight:700}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.danger{color:var(--danger)}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--accent)}
+.btn:disabled{opacity:.5;cursor:default}
+
+/* people */
+.people{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.person{display:flex;flex-direction:column;gap:8px;min-width:0}
+.person .name{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.person .name h3{overflow-wrap:anywhere}
+.big3{display:flex;gap:6px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:2px 9px;font-size:.8rem;font-weight:700;background:var(--surface-2);border:1px solid var(--line)}
+.pill .g{font-size:.95rem}
+.person .actions{display:flex;gap:6px;margin-top:4px}
+.person .actions .btn{padding:5px 10px;font-size:.85rem}
+.sample{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
+
+form.edit{display:grid;grid-template-columns:repeat(2,1fr);gap:12px 14px}
+@media (max-width:560px){form.edit{grid-template-columns:1fr}}
+form.edit .full{grid-column:1/-1}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:.85rem;font-weight:700;color:var(--muted);min-width:0}
+label.f input,label.f select{font:inherit;color:var(--fg);background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%;min-width:0}
+label.chk{display:flex;align-items:center;gap:8px;font-size:.9rem;color:var(--fg)}
+.form-actions{display:flex;gap:8px;justify-content:flex-end;grid-column:1/-1}
+.err{color:var(--danger);font-size:.9rem;grid-column:1/-1}
+
+/* chart */
+.chart-wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:820px){.chart-wrap{grid-template-columns:1fr}}
+svg.wheel{width:100%;height:auto;max-width:520px;display:block;margin:0 auto}
+table.pl{width:100%;border-collapse:collapse;font-size:.93rem}
+table.pl th{text-align:left;font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--line)}
+table.pl td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+table.pl tr:last-child td{border-bottom:0}
+table.pl .g{font-size:1.1rem;width:28px}
+.sw{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.el-fire{color:var(--fire)} .el-earth{color:var(--earth)} .el-air{color:var(--air)} .el-water{color:var(--water)}
+.bg-fire{background:var(--fire)} .bg-earth{background:var(--earth)} .bg-air{background:var(--air)} .bg-water{background:var(--water)}
+
+/* traits */
+.trait{display:grid;grid-template-columns:52px 1fr;gap:12px;align-items:start}
+.trait .g{font-family:var(--font-display);font-size:1.9rem;line-height:1;text-align:center;padding-top:2px}
+.trait h3 span{color:var(--muted);font-weight:500}
+.kw{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 6px}
+.bars{display:grid;grid-template-columns:auto 1fr auto;gap:8px 10px;align-items:center}
+.bar{height:10px;background:var(--surface-2);border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:4px}
+
+/* compat */
+.pair-pick{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center}
+@media (max-width:560px){.pair-pick{grid-template-columns:1fr}}
+.pair-pick .vs{font-family:var(--font-display);color:var(--muted);text-align:center}
+.score{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center}
+@media (max-width:560px){.score{grid-template-columns:1fr}}
+.ring{width:120px;height:120px}
+.score h2{font-size:1.6rem}
+.verdict{font-family:var(--font-display);font-size:1.25rem}
+.factors{display:flex;flex-direction:column;gap:10px}
+.factor{display:grid;grid-template-columns:1fr auto;gap:8px 12px;align-items:center;padding:10px 12px;border-radius:8px;background:var(--surface-2)}
+.factor .t{font-weight:700}
+.factor .d{grid-column:1/-1;font-size:.9rem;color:var(--muted)}
+.factor .s{font-weight:700;font-variant-numeric:tabular-nums}
+.factor.pos .s{color:var(--earth)} .factor.neg .s{color:var(--fire)}
+
+/* matrix */
+.matrix-wrap{overflow-x:auto}
+table.mx{border-collapse:separate;border-spacing:2px;font-size:.9rem}
+table.mx th{font-weight:700;padding:6px 8px;text-align:left;white-space:nowrap;color:var(--muted);font-size:.85rem}
+table.mx th.col{writing-mode:vertical-rl;transform:rotate(180deg);text-align:left;vertical-align:bottom;padding:8px 2px}
+table.mx td{width:56px;height:44px;text-align:center;border-radius:6px;font-weight:700;font-variant-numeric:tabular-nums;cursor:pointer;position:relative}
+table.mx td.self{background:var(--surface-2);color:var(--muted);cursor:default}
+table.mx td.hi{color:var(--on-accent)}
+.legend{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:.85rem;color:var(--muted)}
+.legend .ramp{width:140px;height:10px;border-radius:4px;background:linear-gradient(90deg,var(--surface-2),var(--accent))}
+.tip{position:fixed;pointer-events:none;background:var(--fg);color:var(--bg);padding:6px 10px;border-radius:6px;font-size:.85rem;z-index:5;max-width:260px}
+
+footer{margin-top:28px;font-size:.84rem;color:var(--muted);max-width:68ch}
+.empty{text-align:center;padding:36px 12px;color:var(--muted)}
+@media (prefers-reduced-motion:no-preference){.bar i,.ring circle{transition:all .5s ease}}
+</style>
+
+<div class="wrap">
+<header class="top">
+  <div class="brand">
+    <svg class="mark" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="20" fill="none" stroke="var(--accent)" stroke-width="1.5"/><circle cx="22" cy="22" r="12" fill="none" stroke="var(--line)" stroke-width="1"/><circle cx="22" cy="22" r="3" fill="var(--gold)"/><circle cx="22" cy="6" r="2" fill="var(--accent)"/><circle cx="34" cy="30" r="2" fill="var(--accent)"/><circle cx="10" cy="30" r="2" fill="var(--accent)"/></svg>
+    <div><h1>Astro Compat</h1><p data-i="tagline"></p></div>
+  </div>
+  <div class="lang" role="group" aria-label="Language">
+    <button id="lang-cs" aria-pressed="false">CS</button><button id="lang-en" aria-pressed="false">EN</button>
+  </div>
+</header>
+
+<nav class="tabs" role="tablist">
+  <button role="tab" data-tab="people" data-i="tab_people"></button>
+  <button role="tab" data-tab="chart" data-i="tab_chart"></button>
+  <button role="tab" data-tab="traits" data-i="tab_traits"></button>
+  <button role="tab" data-tab="compat" data-i="tab_compat"></button>
+  <button role="tab" data-tab="matrix" data-i="tab_matrix"></button>
+</nav>
+
+<main id="main"></main>
+
+<footer><p data-i="disclaimer"></p></footer>
+</div>
+<div class="tip" id="tip" hidden></div>
+
+<script>
+/* ============ ASTRO ENGINE (Schlyter low-precision elements; sign-level accuracy) ============ */
+const ENGINE=(()=>{
+  const D2R=Math.PI/180,R2D=180/Math.PI;
+  const rev=x=>((x%360)+360)%360;
+  const sin=x=>Math.sin(x*D2R),cos=x=>Math.cos(x*D2R),atan2=(y,x)=>rev(Math.atan2(y,x)*R2D);
+  function tzOffsetMin(tz,utcMs){
+    const f=new Intl.DateTimeFormat('en-US',{timeZone:tz,hourCycle:'h23',year:'numeric',month:'numeric',day:'numeric',hour:'numeric',minute:'numeric',second:'numeric'});
+    const p={};for(const x of f.formatToParts(new Date(utcMs)))p[x.type]=x.value;
+    const asUtc=Date.UTC(+p.year,+p.month-1,+p.day,+p.hour,+p.minute,+p.second);
+    return Math.round((asUtc-utcMs)/60000);
+  }
+  function localToUtc(y,m,d,h,mi,tz){
+    const guess=Date.UTC(y,m-1,d,h,mi);
+    let off=tzOffsetMin(tz,guess),utc=guess-off*60000;
+    const off2=tzOffsetMin(tz,utc);if(off2!==off)utc=guess-off2*60000;
+    return utc;
+  }
+  function kepler(M,e){let E=M+R2D*e*sin(M)*(1+e*cos(M));for(let i=0;i<8;i++){const d=(E-R2D*e*sin(E)-M)/(1-e*cos(E));E-=d;if(Math.abs(d)<1e-6)break}return E}
+  function orbit(el){ // heliocentric (or geocentric for Sun/Moon) ecliptic position
+    const E=kepler(el.M,el.e),xv=el.a*(cos(E)-el.e),yv=el.a*Math.sqrt(1-el.e*el.e)*sin(E);
+    const v=atan2(yv,xv),r=Math.hypot(xv,yv),u=v+el.w;
+    return {x:r*(cos(el.N)*cos(u)-sin(el.N)*sin(u)*cos(el.i)),y:r*(sin(el.N)*cos(u)+cos(el.N)*sin(u)*cos(el.i)),z:r*sin(u)*sin(el.i),v,r};
+  }
+  function positions(utcMs){
+    const jd=utcMs/86400000+2440587.5,d=jd-2451543.5;
+    const sunEl={N:0,i:0,w:rev(282.9404+4.70935e-5*d),a:1,e:0.016709-1.151e-9*d,M:rev(356.0470+0.9856002585*d)};
+    const s=orbit(sunEl);const sunLon=atan2(s.y,s.x);
+    const moonEl={N:rev(125.1228-0.0529538083*d),i:5.1454,w:rev(318.0634+0.1643573223*d),a:60.2666,e:0.054900,M:rev(115.3654+13.0649929509*d)};
+    const mo=orbit(moonEl);let moonLon=atan2(mo.y,mo.x);
+    {const Ms=sunEl.M,Mm=moonEl.M,Ls=rev(Ms+sunEl.w),Lm=rev(Mm+moonEl.w+moonEl.N),D=Lm-Ls,F=Lm-moonEl.N;
+     moonLon+= -1.274*sin(Mm-2*D)+0.658*sin(2*D)-0.186*sin(Ms)-0.059*sin(2*Mm-2*D)-0.057*sin(Mm-2*D+Ms)+0.053*sin(Mm+2*D)+0.046*sin(2*D-Ms)+0.041*sin(Mm-Ms)-0.035*sin(D)-0.031*sin(Mm+Ms)-0.015*sin(2*F-2*D)+0.011*sin(Mm-4*D);}
+    const P={
+      mercury:{N:48.3313+3.24587e-5*d,i:7.0047+5e-8*d,w:29.1241+1.01444e-5*d,a:0.387098,e:0.205635+5.59e-10*d,M:168.6562+4.0923344368*d},
+      venus:{N:76.6799+2.4659e-5*d,i:3.3946+2.75e-8*d,w:54.8910+1.38374e-5*d,a:0.723330,e:0.006773-1.302e-9*d,M:48.0052+1.6021302244*d},
+      mars:{N:49.5574+2.11081e-5*d,i:1.8497-1.78e-8*d,w:286.5016+2.92961e-5*d,a:1.523688,e:0.093405+2.516e-9*d,M:18.6021+0.5240207766*d},
+      jupiter:{N:100.4542+2.76854e-5*d,i:1.3030-1.557e-7*d,w:273.8777+1.64505e-5*d,a:5.20256,e:0.048498+4.469e-9*d,M:19.8950+0.0830853001*d},
+      saturn:{N:113.6634+2.3898e-5*d,i:2.4886-1.081e-7*d,w:339.3939+2.97661e-5*d,a:9.55475,e:0.055546-9.499e-9*d,M:316.9670+0.0334442282*d},
+      uranus:{N:74.0005+1.3978e-5*d,i:0.7733+1.9e-8*d,w:96.6612+3.0565e-5*d,a:19.18171-1.55e-8*d,e:0.047318+7.45e-9*d,M:142.5905+0.011725806*d},
+      neptune:{N:131.7806+3.0173e-5*d,i:1.7700-2.55e-7*d,w:272.8461-6.027e-6*d,a:30.05826+3.313e-8*d,e:0.008606+2.15e-9*d,M:260.2471+0.005995147*d}};
+    const out={sun:sunLon,moon:rev(moonLon)};
+    const Mj=rev(P.jupiter.M),Msat=rev(P.saturn.M),Mu=rev(P.uranus.M);
+    for(const k in P){const el=P[k];el.M=rev(el.M);el.N=rev(el.N);el.w=rev(el.w);const h=orbit(el);
+      let lon=atan2(h.y+s.y,h.x+s.x); // geocentric: heliocentric planet + Sun's geocentric vector
+      if(k==='jupiter')lon+= -0.332*sin(2*Mj-5*Msat-67.6)-0.056*sin(2*Mj-2*Msat+21)+0.042*sin(3*Mj-5*Msat+21)-0.036*sin(Mj-2*Msat)+0.022*cos(Mj-Msat)+0.023*sin(2*Mj-3*Msat+52)-0.016*sin(Mj-5*Msat-69);
+      if(k==='saturn')lon+= 0.812*sin(2*Mj-5*Msat-67.6)-0.229*cos(2*Mj-4*Msat-2)+0.119*sin(Mj-2*Msat-3)+0.046*sin(2*Mj-6*Msat-69)+0.014*sin(Mj-3*Msat+32);
+      if(k==='uranus')lon+= 0.040*sin(Msat-2*Mu+6)+0.035*sin(Msat-3*Mu+33)-0.015*sin(Mj-Mu+20);
+      out[k]=rev(lon);}
+    {const S=50.03+0.033459652*d,Pp=238.95+0.003968789*d;
+     const lonecl=238.9508+0.00400703*d-19.799*sin(Pp)+19.848*cos(Pp)+0.897*sin(2*Pp)-4.956*cos(2*Pp)+0.610*sin(3*Pp)+1.211*cos(3*Pp)-0.341*sin(4*Pp)-0.190*cos(4*Pp)+0.128*sin(5*Pp)-0.034*cos(5*Pp)-0.038*sin(6*Pp)+0.031*cos(6*Pp)+0.020*sin(S-Pp)-0.010*cos(S-Pp);
+     const latecl=-3.9082-5.453*sin(Pp)-14.975*cos(Pp)+3.527*sin(2*Pp)+1.673*cos(2*Pp)-1.051*sin(3*Pp)+0.328*cos(3*Pp)+0.179*sin(4*Pp)-0.292*cos(4*Pp)+0.019*sin(5*Pp)+0.100*cos(5*Pp)+0.017*sin(6*Pp)-0.006*cos(6*Pp)+0.006*sin(S-Pp)-0.004*cos(S-Pp);
+     const r=40.72+6.68*sin(Pp)+6.90*cos(Pp)-1.18*sin(2*Pp)-0.03*cos(2*Pp)+0.15*sin(3*Pp)-0.14*cos(3*Pp);
+     const xh=r*cos(lonecl)*cos(latecl),yh=r*sin(lonecl)*cos(latecl);
+     out.pluto=atan2(yh+s.y,xh+s.x);}
+    return {d,jd,lon:out};
+  }
+  function angles(utcMs,lat,lon){
+    const jd=utcMs/86400000+2440587.5,d=jd-2451543.5;
+    const eps=23.4393-3.563e-7*d;
+    const gmst=rev(280.46061837+360.98564736629*(jd-2451545.0));
+    const ramc=rev(gmst+lon);
+    const mc=atan2(sin(ramc),cos(ramc)*cos(eps));
+    const asc=atan2(cos(ramc),-(sin(ramc)*cos(eps)+Math.tan(lat*D2R)*sin(eps)));
+    return {asc,mc,ramc};
+  }
+  function chart(p){
+    const utc=localToUtc(p.y,p.m,p.d,p.h,p.mi,p.tz);
+    const pos=positions(utc),ang=angles(utc,p.lat,p.lon);
+    return {utc,...pos.lon,asc:ang.asc,mc:ang.mc};
+  }
+  return {chart,localToUtc,positions,angles,rev};
+})();
+
+/* ============ DATA ============ */
+const SIGNS=[
+ {k:'aries',g:'♈︎',el:'fire',mod:'cardinal',ruler:'Mars',en:{n:'Aries',kw:['bold','impulsive','direct'],sun:'Charges first and asks questions later. Competitive, honest to a fault, quickly bored and quick to forgive.',moon:'Feelings arrive hot and fast, then blow over; needs to act on an emotion rather than sit with it.',asc:'Comes across as energetic and a little impatient; people notice the walk before the words.',venus:'Loves the chase; falls hard and fast and wants a partner who can keep up.',mars:'Fights openly and briefly; works in bursts of sheer force.'},
+  cs:{n:'Beran',loc:'v Beranu',kw:['odvážný','impulzivní','přímý'],sun:'Vyrazí první a ptá se až potom. Soutěživý, upřímný až na hranu, rychle se nudí a rychle odpouští.',moon:'City přicházejí prudce a rychle zase odezní; potřebuje emoci odžít činem, ne ji rozebírat.',asc:'Působí energicky a trochu netrpělivě; lidé si všimnou chůze dřív než slov.',venus:'Miluje lov; zamiluje se rychle a naplno a chce partnera, který stačí tempu.',mars:'Bojuje otevřeně a krátce; pracuje v nárazech hrubé síly.'}},
+ {k:'taurus',g:'♉︎',el:'earth',mod:'fixed',ruler:'Venus',en:{n:'Taurus',kw:['steady','sensual','stubborn'],sun:'Slow to start, impossible to stop. Values comfort, good food, loyalty and a plan that does not change.',moon:'Needs physical security and routine to feel calm; soothed by touch, meals and a familiar sofa.',asc:'Reads as grounded and unhurried, with a calm presence others lean on.',venus:'Loves with the senses: gifts, dinners, long hugs; wants loyalty above all and forgives slowly.',mars:'Patient, persistent effort; anger builds slowly and then stays.'},
+  cs:{n:'Býk',loc:'v Býku',kw:['stálý','smyslný','tvrdohlavý'],sun:'Pomalu se rozjíždí, ale pak ho nic nezastaví. Cení pohodlí, dobré jídlo, věrnost a plán, který se nemění.',moon:'Potřebuje hmotné jistoty a rutinu; uklidní ho dotek, jídlo a známý gauč.',asc:'Působí usazeně a beze spěchu, s klidem, o který se ostatní opírají.',venus:'Miluje smysly: dárky, večeře, dlouhá objetí; nade vše chce věrnost a odpouští pomalu.',mars:'Trpělivé, vytrvalé úsilí; zlost se dlouho hromadí a pak dlouho zůstává.'}},
+ {k:'gemini',g:'♊︎',el:'air',mod:'mutable',ruler:'Mercury',en:{n:'Gemini',kw:['curious','witty','restless'],sun:'Two of everything: opinions, hobbies, phones. Talks fast, learns faster and changes the subject before you have finished.',moon:'Processes feelings by talking about them; gets anxious when bored or silent.',asc:'Comes across as quick, chatty and youthful; makes friends in a queue.',venus:'Flirts with words; needs a partner who is also a great conversation.',mars:'Argues rather than fights; energy scattered across many projects.'},
+  cs:{n:'Blíženci',loc:'v Blížencích',kw:['zvídavý','vtipný','neposedný'],sun:'Všechno má dvakrát: názory, koníčky, telefony. Mluví rychle, učí se ještě rychleji a změní téma, než domluvíte.',moon:'City zpracovává tím, že o nich mluví; z nudy a ticha je nervózní.',asc:'Působí bystře, upovídaně a mladistvě; spřátelí se i ve frontě.',venus:'Flirtuje slovy; potřebuje partnera, který je zároveň skvělá konverzace.',mars:'Spíš se hádá než bojuje; energii rozptyluje do mnoha projektů.'}},
+ {k:'cancer',g:'♋︎',el:'water',mod:'cardinal',ruler:'Moon',en:{n:'Cancer',kw:['caring','moody','protective'],sun:'Home is the headquarters. Remembers every kindness and every slight; feeds people as a love language.',moon:'Deeply sensitive and tidal; needs a safe nest and someone to look after.',asc:'Appears soft-spoken and approachable, with a shell that takes time to open.',venus:'Loves by nurturing; wants commitment, family and a shared kitchen.',mars:'Acts indirectly and defensively; fierce when protecting their own.'},
+  cs:{n:'Rak',loc:'v Raku',kw:['pečující','náladový','ochranitelský'],sun:'Domov je hlavní stan. Pamatuje si každou laskavost i každou křivdu; krmí lidi, protože tak miluje.',moon:'Hluboce citlivý, nálady přicházejí jako příliv; potřebuje bezpečné hnízdo a někoho, o koho se stará.',asc:'Působí tiše a přístupně, s krunýřem, který se otevírá pomalu.',venus:'Miluje péčí; chce závazek, rodinu a společnou kuchyň.',mars:'Jedná nepřímo a obranně; zuřivý, když chrání své blízké.'}},
+ {k:'leo',g:'♌︎',el:'fire',mod:'fixed',ruler:'Sun',en:{n:'Leo',kw:['proud','generous','dramatic'],sun:'Needs an audience and deserves one. Warm, loyal, theatrical and allergic to being ignored.',moon:'Feels best when appreciated; sulks grandly when not.',asc:'Enters a room like it was waiting; big hair, big smile, big presence.',venus:'Romantic on a grand scale; wants to be adored and adores back.',mars:'Confident, showy effort; leads from the front and hates losing face.'},
+  cs:{n:'Lev',loc:'ve Lvu',kw:['hrdý','štědrý','dramatický'],sun:'Potřebuje publikum a zaslouží si ho. Vřelý, věrný, teatrální a alergický na přehlížení.',moon:'Nejlíp se cítí, když je oceňován; když ne, trucuje s grácií.',asc:'Vstupuje do místnosti, jako by na něj čekala; velké vlasy, velký úsměv, velká přítomnost.',venus:'Romantik ve velkém stylu; chce být zbožňován a zbožňuje nazpátek.',mars:'Sebevědomé, okázalé nasazení; vede zepředu a nesnáší ztrátu tváře.'}},
+ {k:'virgo',g:'♍︎',el:'earth',mod:'mutable',ruler:'Mercury',en:{n:'Virgo',kw:['precise','helpful','critical'],sun:'Notices the typo, the dust and the flaw in your plan, then quietly fixes all three. Shows love through usefulness.',moon:'Calms down by organising; worries in lists.',asc:'Looks neat, modest and observant; says little until asked.',venus:'Loves through small acts of service; shy at first, devoted later.',mars:'Methodical, efficient effort; annoyed by sloppiness more than by enemies.'},
+  cs:{n:'Panna',loc:'v Panně',kw:['přesný','nápomocný','kritický'],sun:'Všimne si překlepu, prachu i chyby ve vašem plánu a všechno to potichu opraví. Lásku projevuje užitečností.',moon:'Uklidňuje se uklízením; starosti si dělá v seznamech.',asc:'Působí upraveně, skromně a pozorně; mluví málo, dokud se ho nezeptáte.',venus:'Miluje drobnými službami; zprvu plachý, později oddaný.',mars:'Metodické, efektivní nasazení; lajdáctví ho štve víc než nepřátelé.'}},
+ {k:'libra',g:'♎︎',el:'air',mod:'cardinal',ruler:'Venus',en:{n:'Libra',kw:['charming','diplomatic','indecisive'],sun:'Sees both sides of everything, which is why dinner takes an hour to pick. Craves harmony, beauty and company.',moon:'Feels off balance alone; needs peace in the room to feel peace inside.',asc:'Polished, pleasant and well dressed; the person everyone likes at first sight.',venus:'Born for partnership; romantic, fair and allergic to ugliness and conflict.',mars:'Avoids open fights; wins by negotiation and charm.'},
+  cs:{n:'Váhy',loc:'ve Vahách',kw:['okouzlující','diplomatický','nerozhodný'],sun:'Vidí obě strany všeho, a proto výběr večeře trvá hodinu. Touží po harmonii, kráse a společnosti.',moon:'O samotě se cítí nevyváženě; potřebuje klid v místnosti, aby měl klid uvnitř.',asc:'Uhlazený, příjemný a dobře oblečený; člověk, kterého má každý rád na první pohled.',venus:'Stvořený pro partnerství; romantický, férový a alergický na ošklivost a konflikty.',mars:'Vyhýbá se otevřeným bojům; vítězí vyjednáváním a šarmem.'}},
+ {k:'scorpio',g:'♏︎',el:'water',mod:'fixed',ruler:'Pluto',en:{n:'Scorpio',kw:['intense','private','loyal'],sun:'All or nothing, usually all. Reads people instantly, trusts slowly and never forgets a betrayal.',moon:'Feelings run deep and stay hidden; needs total trust before opening up.',asc:'Magnetic and guarded; the quiet stare people remember.',venus:'Loves with intensity and possessiveness; wants a soulmate, not a date.',mars:'Strategic, relentless effort; a grudge is a long-term project.'},
+  cs:{n:'Štír',loc:'ve Štíru',kw:['intenzivní','uzavřený','věrný'],sun:'Všechno nebo nic, obvykle všechno. Lidi přečte okamžitě, důvěřuje pomalu a zradu nikdy nezapomene.',moon:'City jdou hluboko a zůstávají skryté; otevře se až při naprosté důvěře.',asc:'Magnetický a ostražitý; ten tichý pohled, který si lidé pamatují.',venus:'Miluje intenzivně a majetnicky; chce spřízněnou duši, ne rande.',mars:'Strategické, neúnavné nasazení; nevraživost je dlouhodobý projekt.'}},
+ {k:'sagittarius',g:'♐︎',el:'fire',mod:'mutable',ruler:'Jupiter',en:{n:'Sagittarius',kw:['optimistic','blunt','adventurous'],sun:'Always has a trip, a theory and a joke ready. Honest to the point of tactless, restless and allergic to small rooms.',moon:'Needs freedom and a horizon; feels fine as long as there is a next plan.',asc:'Friendly, loud and a bit clumsy; makes the room feel bigger.',venus:'Loves adventure and laughter; commitment must not feel like a cage.',mars:'Enthusiastic bursts; starts big, finishes rarely.'},
+  cs:{n:'Střelec',loc:'ve Střelci',kw:['optimistický','přímočarý','dobrodružný'],sun:'Vždy má po ruce výlet, teorii a vtip. Upřímný až netaktní, neposedný a alergický na malé místnosti.',moon:'Potřebuje svobodu a obzor; je v pohodě, dokud existuje další plán.',asc:'Přátelský, hlasitý a trochu nemotorný; místnost s ním působí větší.',venus:'Miluje dobrodružství a smích; závazek nesmí působit jako klec.',mars:'Nadšené nárazy; začíná ve velkém, dokončuje zřídka.'}},
+ {k:'capricorn',g:'♑︎',el:'earth',mod:'cardinal',ruler:'Saturn',en:{n:'Capricorn',kw:['ambitious','disciplined','dry'],sun:'Has a five-year plan and is ahead of it. Dry humour, long memory and respect earned slowly.',moon:'Keeps feelings under control; needs achievement and structure to feel safe.',asc:'Serious, composed and older than their years; thaws with time.',venus:'Loves cautiously and for the long haul; proves it with reliability, not words.',mars:'Steady, strategic ambition; climbs one step at a time and never slides back.'},
+  cs:{n:'Kozoroh',loc:'v Kozorohu',kw:['ctižádostivý','disciplinovaný','suchý'],sun:'Má pětiletý plán a je napřed. Suchý humor, dlouhá paměť a respekt, který se získává pomalu.',moon:'City drží pod kontrolou; bezpečí mu dávají výsledky a řád.',asc:'Vážný, vyrovnaný a starší, než na kolik vypadá; roztává časem.',venus:'Miluje opatrně a nadlouho; dokazuje to spolehlivostí, ne slovy.',mars:'Vytrvalá, strategická ctižádost; stoupá po schodech a nikdy neklouže zpět.'}},
+ {k:'aquarius',g:'♒︎',el:'air',mod:'fixed',ruler:'Uranus',en:{n:'Aquarius',kw:['original','detached','idealistic'],sun:'Friend to everyone, close to few. Thinks in systems, loves a cause and rebels against whatever is expected.',moon:'Feels through ideas; needs space and gets cold when crowded.',asc:'Odd in an interesting way; dresses, talks or thinks slightly sideways.',venus:'Loves friendship first; needs an unconventional, free relationship.',mars:'Erratic, inventive effort; fights for principles, not for ego.'},
+  cs:{n:'Vodnář',loc:'ve Vodnáři',kw:['originální','odtažitý','idealistický'],sun:'Kamarád všech, blízký málokomu. Myslí v systémech, miluje vyšší cíle a bouří se proti všemu očekávanému.',moon:'Cítí přes myšlenky; potřebuje prostor a při tlaku chladne.',asc:'Zvláštní zajímavým způsobem; obléká se, mluví nebo myslí trochu jinak.',venus:'Nejdřív přátelství; potřebuje nekonvenční, svobodný vztah.',mars:'Nevyzpytatelné, vynalézavé nasazení; bojuje za zásady, ne za ego.'}},
+ {k:'pisces',g:'♓︎',el:'water',mod:'mutable',ruler:'Neptune',en:{n:'Pisces',kw:['dreamy','empathetic','elusive'],sun:'Feels the room before entering it. Artistic, forgiving, easily lost and kinder than is practical.',moon:'Absorbs everyone\'s moods; needs quiet, water and time alone to reset.',asc:'Soft, dreamy and hard to pin down; eyes that seem to be elsewhere.',venus:'Loves unconditionally and romantically; sees the best in people, sometimes too much.',mars:'Indirect, fluid effort; avoids confrontation and flows around obstacles.'},
+  cs:{n:'Ryby',loc:'v Rybách',kw:['snivý','empatický','nepolapitelný'],sun:'Cítí atmosféru místnosti dřív, než do ní vstoupí. Umělecký, odpouštějící, snadno se ztratí a laskavější, než je praktické.',moon:'Nasává nálady všech kolem; k resetu potřebuje ticho, vodu a čas o samotě.',asc:'Jemný, zasněný a těžko zachytitelný; oči, které jsou jakoby jinde.',venus:'Miluje bezpodmínečně a romanticky; vidí v lidech to nejlepší, někdy až příliš.',mars:'Nepřímé, plynulé nasazení; vyhýbá se konfrontaci a obtéká překážky.'}}
+];
+const BODIES=[['sun','☉︎'],['moon','☽︎'],['mercury','☿︎'],['venus','♀︎'],['mars','♂︎'],['jupiter','♃︎'],['saturn','♄︎'],['uranus','♅︎'],['neptune','♆︎'],['pluto','♇︎'],['asc','AC'],['mc','MC']];
+const CITIES=[
+ ['Praha','Europe/Prague',50.0755,14.4378],['Brno','Europe/Prague',49.1951,16.6068],['Ostrava','Europe/Prague',49.8209,18.2625],['Plzeň','Europe/Prague',49.7384,13.3736],['Olomouc','Europe/Prague',49.5938,17.2509],['Liberec','Europe/Prague',50.7663,15.0543],['České Budějovice','Europe/Prague',48.9745,14.4743],['Hradec Králové','Europe/Prague',50.2092,15.8328],['Ústí nad Labem','Europe/Prague',50.6607,14.0323],['Pardubice','Europe/Prague',50.0343,15.7812],['Zlín','Europe/Prague',49.2265,17.6675],['Jihlava','Europe/Prague',49.3961,15.5903],['Karlovy Vary','Europe/Prague',50.2319,12.8720],
+ ['Bratislava','Europe/Bratislava',48.1486,17.1077],['Košice','Europe/Bratislava',48.7164,21.2611],['Wien','Europe/Vienna',48.2082,16.3738],['Berlin','Europe/Berlin',52.5200,13.4050],['München','Europe/Berlin',48.1351,11.5820],['Hamburg','Europe/Berlin',53.5511,9.9937],['Warszawa','Europe/Warsaw',52.2297,21.0122],['Kraków','Europe/Warsaw',50.0647,19.9450],['Budapest','Europe/Budapest',47.4979,19.0402],['Paris','Europe/Paris',48.8566,2.3522],['London','Europe/London',51.5074,-0.1278],['Dublin','Europe/Dublin',53.3498,-6.2603],['Madrid','Europe/Madrid',40.4168,-3.7038],['Barcelona','Europe/Madrid',41.3874,2.1686],['Lisboa','Europe/Lisbon',38.7223,-9.1393],['Roma','Europe/Rome',41.9028,12.4964],['Milano','Europe/Rome',45.4642,9.1900],['Zürich','Europe/Zurich',47.3769,8.5417],['Amsterdam','Europe/Amsterdam',52.3676,4.9041],['Bruxelles','Europe/Brussels',50.8503,4.3517],['København','Europe/Copenhagen',55.6761,12.5683],['Stockholm','Europe/Stockholm',59.3293,18.0686],['Oslo','Europe/Oslo',59.9139,10.7522],['Helsinki','Europe/Helsinki',60.1699,24.9384],['Athina','Europe/Athens',37.9838,23.7275],['Istanbul','Europe/Istanbul',41.0082,28.9784],['Moskva','Europe/Moscow',55.7558,37.6173],['Kyiv','Europe/Kyiv',50.4501,30.5234],
+ ['New York','America/New_York',40.7128,-74.0060],['Chicago','America/Chicago',41.8781,-87.6298],['Los Angeles','America/Los_Angeles',34.0522,-118.2437],['Toronto','America/Toronto',43.6532,-79.3832],['Ciudad de México','America/Mexico_City',19.4326,-99.1332],['São Paulo','America/Sao_Paulo',-23.5505,-46.6333],['Buenos Aires','America/Argentina/Buenos_Aires',-34.6037,-58.3816],
+ ['Tokyo','Asia/Tokyo',35.6762,139.6503],['Seoul','Asia/Seoul',37.5665,126.9780],['Beijing','Asia/Shanghai',39.9042,116.4074],['Shanghai','Asia/Shanghai',31.2304,121.4737],['Mumbai','Asia/Kolkata',19.0760,72.8777],['Delhi','Asia/Kolkata',28.6139,77.2090],['Bangkok','Asia/Bangkok',13.7563,100.5018],['Singapore','Asia/Singapore',1.3521,103.8198],['Dubai','Asia/Dubai',25.2048,55.2708],['Tel Aviv','Asia/Jerusalem',32.0853,34.7818],
+ ['Sydney','Australia/Sydney',-33.8688,151.2093],['Melbourne','Australia/Melbourne',-37.8136,144.9631],['Auckland','Pacific/Auckland',-36.8485,174.7633],['Cairo','Africa/Cairo',30.0444,31.2357],['Johannesburg','Africa/Johannesburg',-26.2041,28.0473]
+];
+const TZS=[...new Set(['UTC',...CITIES.map(c=>c[1])])].sort();
+
+const T={
+ en:{tagline:'Natal charts, traits and compatibility for the people in your life',tab_people:'People',tab_chart:'Chart',tab_traits:'Traits',tab_compat:'Compatibility',tab_matrix:'Matrix',
+  add:'Add person',edit:'Edit',del:'Delete',save:'Save',cancel:'Cancel',restore:'Restore sample people',sample:'sample',name:'Name',date:'Birth date',time:'Birth time',place:'Birth place',custom:'Custom place…',lat:'Latitude',lon:'Longitude',tz:'Time zone',unknownTime:'Birth time unknown (noon is used; Moon and Ascendant are less certain)',
+  born:'Born',in:'in',empty:'No people yet. Add the first one.',pick:'Pick a person',pickTwo:'Pick two people',sameTwo:'Pick two different people.',needTwo:'Add at least two people to compare.',
+  planet:'Body',sign:'Sign',degree:'Degree',house:'House',big3:'Big three',aspects:'Aspects between planets',
+  sun:'Sun',moon:'Moon',mercury:'Mercury',venus:'Venus',mars:'Mars',jupiter:'Jupiter',saturn:'Saturn',uranus:'Uranus',neptune:'Neptune',pluto:'Pluto',asc:'Ascendant',mc:'Midheaven',
+  fire:'Fire',earth:'Earth',air:'Air',water:'Water',cardinal:'Cardinal',fixed:'Fixed',mutable:'Mutable',element:'Element',modality:'Modality',ruler:'Ruler',
+  balance:'Element and modality balance',balanceNote:'Count of the ten planets plus the Ascendant.',
+  sunIn:'Sun in',moonIn:'Moon in',ascIn:'Ascendant in',venusIn:'Venus in',marsIn:'Mars in',
+  sunLbl:'core self',moonLbl:'inner needs',ascLbl:'first impression',venusLbl:'in love',marsLbl:'in action',
+  score:'Compatibility score',breakdown:'What drives the score',elements:'Elements',sunSigns:'Sun signs',
+  v90:'Written in the stars',v75:'Strong match',v60:'Workable',v45:'Challenging',v0:'Cosmic mismatch',
+  conjunction:'conjunction',sextile:'sextile',square:'square',trine:'trine',opposition:'opposition',none:'no aspect',orb:'orb',
+  matrixTitle:'Everyone with everyone',matrixNote:'Tap a cell to open that pair in Compatibility.',low:'low',high:'high',
+  disclaimer:'For entertainment only. Positions come from simplified orbital formulas (accurate to the sign, usually within a degree); houses are equal houses from the Ascendant; time zones and daylight saving follow your browser\'s zone database. People are stored only in this browser.',
+  pairs:{sunSun:['Sun – Sun','core identities','Your basic natures sit well together.','Your basic natures pull in different directions.'],
+   moonMoon:['Moon – Moon','emotional needs','You need the same things to feel safe.','What comforts one unsettles the other.'],
+   sunMoonAB:['{A}\'s Sun – {B}\'s Moon','self meets heart','{A} naturally gives what {B} needs emotionally.','{A}\'s way of being rubs {B}\'s feelings the wrong way.'],
+   sunMoonBA:['{B}\'s Sun – {A}\'s Moon','self meets heart','{B} naturally gives what {A} needs emotionally.','{B}\'s way of being rubs {A}\'s feelings the wrong way.'],
+   venusMarsAB:['{A}\'s Venus – {B}\'s Mars','attraction','Strong spark: {A}\'s love style meets {B}\'s drive.','Mixed signals between {A}\'s love style and {B}\'s drive.'],
+   venusMarsBA:['{B}\'s Venus – {A}\'s Mars','attraction','Strong spark: {B}\'s love style meets {A}\'s drive.','Mixed signals between {B}\'s love style and {A}\'s drive.'],
+   venusVenus:['Venus – Venus','love languages','You show affection in compatible ways.','You show affection in ways the other may miss.'],
+   marsMars:['Mars – Mars','friction','Your energies cooperate rather than compete.','Two engines pulling in different directions; arguments get heated.'],
+   ascSunAB:['{A}\'s Ascendant – {B}\'s Sun','first impression','{B} likes {A} on sight.','{A}\'s surface does not match what {B} expects.'],
+   ascSunBA:['{B}\'s Ascendant – {A}\'s Sun','first impression','{A} likes {B} on sight.','{B}\'s surface does not match what {A} expects.']},
+  elpairs:{'fire-fire':'Two flames: passionate, fast, loud and occasionally a wildfire.','earth-earth':'Two rocks: stable, loyal, practical, possibly a little dull on a Saturday night.','air-air':'Two breezes: endless talk, shared ideas, few dishes done.','water-water':'Two oceans: deep empathy and moods that amplify each other.','fire-air':'Air feeds fire: inspiration, fun and momentum; someone has to remember the keys.','earth-water':'Water nourishes earth: nurturing, secure and homely; watch out for stagnation.','fire-earth':'Fire wants to go, earth wants a plan. Productive when they listen, exhausting when they do not.','air-water':'Air thinks, water feels. Fascinating and confusing in equal measure.','fire-water':'Steam. The attraction is strong, so is the risk of someone being put out.','earth-air':'Earth wants it done, air wants it discussed. Works with patience on both sides.'}},
+ cs:{tagline:'Horoskopy, povahy a partnerská shoda lidí kolem vás',tab_people:'Lidé',tab_chart:'Horoskop',tab_traits:'Povaha',tab_compat:'Shoda',tab_matrix:'Matice',
+  add:'Přidat osobu',edit:'Upravit',del:'Smazat',save:'Uložit',cancel:'Zrušit',restore:'Obnovit ukázkové osoby',sample:'ukázka',name:'Jméno',date:'Datum narození',time:'Čas narození',place:'Místo narození',custom:'Vlastní místo…',lat:'Zeměpisná šířka',lon:'Zeměpisná délka',tz:'Časové pásmo',unknownTime:'Čas narození neznám (použije se poledne; Měsíc a Ascendent jsou méně jisté)',
+  born:'Narození',in:'v',empty:'Zatím nikdo. Přidejte první osobu.',pick:'Vyberte osobu',pickTwo:'Vyberte dva lidi',sameTwo:'Vyberte dva různé lidi.',needTwo:'Pro porovnání přidejte aspoň dva lidi.',
+  planet:'Těleso',sign:'Znamení',degree:'Stupeň',house:'Dům',big3:'Velká trojka',aspects:'Aspekty mezi planetami',
+  sun:'Slunce',moon:'Měsíc',mercury:'Merkur',venus:'Venuše',mars:'Mars',jupiter:'Jupiter',saturn:'Saturn',uranus:'Uran',neptune:'Neptun',pluto:'Pluto',asc:'Ascendent',mc:'Střed nebes',
+  fire:'Oheň',earth:'Země',air:'Vzduch',water:'Voda',cardinal:'Kardinální',fixed:'Pevné',mutable:'Proměnlivé',element:'Živel',modality:'Kvalita',ruler:'Vládce',
+  balance:'Rozložení živlů a kvalit',balanceNote:'Počet z deseti planet plus Ascendentu.',
+  sunIn:'Slunce',moonIn:'Měsíc',ascIn:'Ascendent',venusIn:'Venuše',marsIn:'Mars',
+  sunLbl:'jádro osobnosti',moonLbl:'vnitřní potřeby',ascLbl:'první dojem',venusLbl:'v lásce',marsLbl:'v akci',
+  score:'Skóre shody',breakdown:'Co skóre ovlivňuje',elements:'Živly',sunSigns:'Sluneční znamení',
+  v90:'Psáno ve hvězdách',v75:'Silná shoda',v60:'Dá se',v45:'Náročné',v0:'Kosmický nesoulad',
+  conjunction:'konjunkce',sextile:'sextil',square:'kvadratura',trine:'trigon',opposition:'opozice',none:'bez aspektu',orb:'orbis',
+  matrixTitle:'Každý s každým',matrixNote:'Klepnutím na políčko otevřete dvojici v záložce Shoda.',low:'nízká',high:'vysoká',
+  disclaimer:'Jen pro zábavu. Pozice jsou počítány zjednodušenými vzorci (přesné na znamení, obvykle do jednoho stupně); domy jsou rovné domy od Ascendentu; časová pásma a letní čas se řídí databází pásem ve vašem prohlížeči. Lidé jsou uloženi jen v tomto prohlížeči.',
+  pairs:{sunSun:['Slunce – Slunce','jádro osobnosti','Vaše základní povahy si sedí.','Vaše základní povahy táhnou každá jinam.'],
+   moonMoon:['Měsíc – Měsíc','citové potřeby','K pocitu bezpečí potřebujete totéž.','Co jednoho uklidňuje, druhého znervózňuje.'],
+   sunMoonAB:['Slunce {A} – Měsíc {B}','osobnost a srdce','{A} přirozeně dává to, co {B} citově potřebuje.','Způsob, jakým {A} je, dráždí city {B}.'],
+   sunMoonBA:['Slunce {B} – Měsíc {A}','osobnost a srdce','{B} přirozeně dává to, co {A} citově potřebuje.','Způsob, jakým {B} je, dráždí city {A}.'],
+   venusMarsAB:['Venuše {A} – Mars {B}','přitažlivost','Silná jiskra: láska {A} potkává tah {B}.','Smíšené signály mezi láskou {A} a tahem {B}.'],
+   venusMarsBA:['Venuše {B} – Mars {A}','přitažlivost','Silná jiskra: láska {B} potkává tah {A}.','Smíšené signály mezi láskou {B} a tahem {A}.'],
+   venusVenus:['Venuše – Venuše','jazyky lásky','Náklonnost projevujete slučitelně.','Náklonnost projevujete tak, že ji druhý může přehlédnout.'],
+   marsMars:['Mars – Mars','tření','Vaše energie spolupracují, nesoupeří.','Dva motory táhnou každý jinam; hádky bývají ostré.'],
+   ascSunAB:['Ascendent {A} – Slunce {B}','první dojem','{B} si {A} oblíbí na první pohled.','Povrch {A} neodpovídá tomu, co {B} čeká.'],
+   ascSunBA:['Ascendent {B} – Slunce {A}','první dojem','{A} si {B} oblíbí na první pohled.','Povrch {B} neodpovídá tomu, co {A} čeká.']},
+  elpairs:{'fire-fire':'Dva plameny: vášnivé, rychlé, hlučné a občas lesní požár.','earth-earth':'Dva kameny: stabilní, věrní, praktičtí, v sobotu večer možná trochu nuda.','air-air':'Dva vánky: nekonečné rozhovory, společné nápady, málo umytého nádobí.','water-water':'Dva oceány: hluboká empatie a nálady, které se navzájem zesilují.','fire-air':'Vzduch živí oheň: inspirace, zábava a tah na branku; někdo si musí pamatovat klíče.','earth-water':'Voda zavlažuje zemi: pečující, bezpečné a domácké; pozor na stojaté vody.','fire-earth':'Oheň chce vyrazit, země chce plán. Produktivní, když si naslouchají, vyčerpávající, když ne.','air-water':'Vzduch myslí, voda cítí. Fascinující i matoucí stejným dílem.','fire-water':'Pára. Přitažlivost je silná, stejně jako riziko, že někdo uhasne.','earth-air':'Země to chce mít hotové, vzduch to chce probrat. Funguje s trpělivostí na obou stranách.'}}
+};
+
+const SAMPLES=[
+ {id:'s1',name:'Eva',y:1988,m:3,d:14,h:7,mi:30,city:'Praha',sample:true},
+ {id:'s2',name:'Marek',y:1985,m:11,d:2,h:22,mi:15,city:'Brno',sample:true},
+ {id:'s3',name:'Klára',y:1992,m:7,d:21,h:14,mi:5,city:'Ostrava',sample:true},
+ {id:'s4',name:'Jonas',y:1990,m:1,d:9,h:3,mi:40,city:'Berlin',sample:true}
+].map(p=>{const c=CITIES.find(x=>x[0]===p.city);return {...p,tz:c[1],lat:c[2],lon:c[3]}});
+
+/* ============ ASTROLOGY HELPERS ============ */
+const signOf=lon=>SIGNS[Math.floor(ENGINE.rev(lon)/30)];
+const degIn=lon=>ENGINE.rev(lon)%30;
+const fmtDeg=lon=>{const d=degIn(lon),a=Math.floor(d),m=Math.floor((d-a)*60);return `${a}°${String(m).padStart(2,'0')}′`};
+const houseOf=(lon,asc)=>Math.floor(ENGINE.rev(lon-asc)/30)+1;
+const ASPECTS=[['conjunction',0,8,1.0],['opposition',180,8,0.45],['trine',120,8,0.9],['square',90,7,0.2],['sextile',60,5,0.75]];
+function aspect(a,b){let d=Math.abs(ENGINE.rev(a)-ENGINE.rev(b));if(d>180)d=360-d;for(const [t,ang,orb,s] of ASPECTS){const o=Math.abs(d-ang);if(o<=orb)return {type:t,orb:o,score:s}}return {type:'none',orb:null,score:0.5}}
+const ELAFF={'fire-fire':.9,'earth-earth':.9,'air-air':.9,'water-water':.9,'fire-air':.8,'earth-water':.8,'fire-earth':.45,'air-water':.45,'fire-water':.35,'earth-air':.35};
+const elKey=(a,b)=>ELAFF[`${a}-${b}`]!==undefined?`${a}-${b}`:`${b}-${a}`;
+function modAff(a,b){if(a!==b)return .65;return {cardinal:.5,fixed:.4,mutable:.7}[a]}
+
+function compat(A,B){
+  const ca=A.chart,cb=B.chart;
+  const sa=signOf(ca.sun),sb=signOf(cb.sun);
+  const f=[];
+  f.push({k:'sunSun',w:1.5,s:.7*ELAFF[elKey(sa.el,sb.el)]+.3*modAff(sa.mod,sb.mod),asp:aspect(ca.sun,cb.sun)});
+  const mm=aspect(ca.moon,cb.moon);f.push({k:'moonMoon',w:1.5,s:.5*mm.score+.5*ELAFF[elKey(signOf(ca.moon).el,signOf(cb.moon).el)],asp:mm});
+  let x=aspect(ca.sun,cb.moon);f.push({k:'sunMoonAB',w:1,s:x.score,asp:x});
+  x=aspect(cb.sun,ca.moon);f.push({k:'sunMoonBA',w:1,s:x.score,asp:x});
+  x=aspect(ca.venus,cb.mars);f.push({k:'venusMarsAB',w:1,s:x.type==='opposition'?.6:x.type==='square'?.35:x.score,asp:x});
+  x=aspect(cb.venus,ca.mars);f.push({k:'venusMarsBA',w:1,s:x.type==='opposition'?.6:x.type==='square'?.35:x.score,asp:x});
+  x=aspect(ca.venus,cb.venus);f.push({k:'venusVenus',w:.8,s:.5*x.score+.5*ELAFF[elKey(signOf(ca.venus).el,signOf(cb.venus).el)],asp:x});
+  x=aspect(ca.mars,cb.mars);f.push({k:'marsMars',w:.6,s:x.type==='conjunction'?.6:x.score,asp:x});
+  x=aspect(ca.asc,cb.sun);f.push({k:'ascSunAB',w:.5,s:x.score,asp:x});
+  x=aspect(cb.asc,ca.sun);f.push({k:'ascSunBA',w:.5,s:x.score,asp:x});
+  const W=f.reduce((a,b)=>a+b.w,0),raw=f.reduce((a,b)=>a+b.w*b.s,0)/W;
+  const score=Math.round(Math.max(5,Math.min(99,20+(raw-.3)/.6*75)));
+  return {score,raw,factors:f,elKey:elKey(sa.el,sb.el)};
+}
+
+/* ============ STATE ============ */
+const LS='astro-compat.';
+const store={get(k,d){try{const v=localStorage.getItem(LS+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(LS+k,JSON.stringify(v))}catch(e){}}};
+let lang=store.get('lang',(navigator.language||'').startsWith('cs')?'cs':'en');
+let people=store.get('people',null);if(!Array.isArray(people))people=SAMPLES.map(p=>({...p}));
+let tab=store.get('tab','people'),sel=store.get('sel',null),pairSel=store.get('pair',[null,null]),editing=null,formErr='';
+const t=k=>T[lang][k]??k;
+const sname=s=>s[lang].n;
+const sloc=s=>lang==='cs'?s.cs.loc:`in ${s.en.n}`;
+function ensureCharts(){for(const p of people){if(!p.chart){try{p.chart=ENGINE.chart(p)}catch(e){p.chart=null}}}}
+function persist(){store.set('people',people.map(({chart,...p})=>p));store.set('lang',lang);store.set('tab',tab);store.set('sel',sel);store.set('pair',pairSel)}
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const el=(h)=>{const d=document.createElement('template');d.innerHTML=h.trim();return d.content.firstElementChild};
+
+/* ============ RENDER ============ */
+function render(){
+  ensureCharts();
+  if(!people.find(p=>p.id===sel))sel=people[0]?.id??null;
+  document.querySelectorAll('[data-i]').forEach(n=>n.textContent=t(n.dataset.i));
+  document.getElementById('lang-cs').setAttribute('aria-pressed',lang==='cs');
+  document.getElementById('lang-en').setAttribute('aria-pressed',lang==='en');
+  document.querySelectorAll('nav.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===tab));
+  document.documentElement.lang=lang;
+  const m=document.getElementById('main');m.replaceChildren();
+  ({people:renderPeople,chart:renderChart,traits:renderTraits,compat:renderCompat,matrix:renderMatrix})[tab](m);
+  persist();
+}
+function personChips(current,onPick){
+  const c=el('<div class="chips"></div>');
+  for(const p of people){const s=signOf(p.chart.sun);const b=el(`<button class="chip" aria-pressed="${p.id===current}"><span class="dot bg-${s.el}"></span>${esc(p.name)} <span class="muted">${s.g}</span></button>`);b.onclick=()=>onPick(p.id);c.append(b)}
+  return c;
+}
+function bornLine(p){const city=p.city||`${p.lat.toFixed(2)}, ${p.lon.toFixed(2)}`;const dt=`${p.d}. ${p.m}. ${p.y}`;const tm=p.unknownTime?'':`, ${String(p.h).padStart(2,'0')}:${String(p.mi).padStart(2,'0')}`;return `${t('born')} ${dt}${tm}, ${city}`}
+
+/* --- People --- */
+function renderPeople(m){
+  const top=el(`<div class="row" style="justify-content:space-between;margin-bottom:14px"><h2>${t('tab_people')} <span class="muted num" style="font-family:var(--font-body);font-size:1rem">(${people.length})</span></h2><div class="row"><button class="btn ghost" id="restore">${t('restore')}</button><button class="btn primary" id="add">${t('add')}</button></div></div>`);
+  top.querySelector('#add').onclick=()=>{editing={};formErr='';render()};
+  top.querySelector('#restore').onclick=()=>{for(const s of SAMPLES)if(!people.find(p=>p.id===s.id))people.push({...s});render()};
+  m.append(top);
+  if(editing)m.append(renderForm());
+  if(!people.length){m.append(el(`<div class="card empty">${t('empty')}</div>`));return}
+  const grid=el('<div class="people"></div>');
+  for(const p of people){
+    const c=p.chart,s=signOf(c.sun),mo=signOf(c.moon),as=signOf(c.asc);
+    const card=el(`<div class="card person"><div class="name"><h3>${esc(p.name)}</h3>${p.sample?`<span class="sample">${t('sample')}</span>`:''}</div>
+      <p class="small muted">${esc(bornLine(p))}</p>
+      <div class="big3"><span class="pill"><span class="g el-${s.el}">${s.g}</span>${t('sun')}: ${sname(s)}</span><span class="pill"><span class="g el-${mo.el}">${mo.g}</span>${t('moon')}: ${sname(mo)}</span><span class="pill"><span class="g el-${as.el}">${as.g}</span>AC: ${sname(as)}</span></div>
+      <div class="actions"><button class="btn" data-a="chart">${t('tab_chart')}</button><button class="btn" data-a="edit">${t('edit')}</button><button class="btn danger" data-a="del">${t('del')}</button></div></div>`);
+    card.querySelector('[data-a=chart]').onclick=()=>{sel=p.id;tab='chart';render()};
+    card.querySelector('[data-a=edit]').onclick=()=>{editing={...p};formErr='';render();window.scrollTo({top:0})};
+    card.querySelector('[data-a=del]').onclick=(e)=>{const b=e.currentTarget;if(b.dataset.c){people=people.filter(x=>x.id!==p.id);render()}else{b.dataset.c='1';b.textContent=lang==='cs'?'Opravdu smazat?':'Really delete?'}};
+    grid.append(card);
+  }
+  m.append(grid);
+}
+function renderForm(){
+  const e=editing;const isCustom=e.city===''||(e.city===undefined&&e.lat!==undefined);
+  const cityOpts=CITIES.map(c=>`<option value="${esc(c[0])}" ${e.city===c[0]?'selected':''}>${esc(c[0])}</option>`).join('');
+  const tzOpts=TZS.map(z=>`<option value="${z}" ${e.tz===z?'selected':''}>${z}</option>`).join('');
+  const dateVal=e.y?`${e.y}-${String(e.m).padStart(2,'0')}-${String(e.d).padStart(2,'0')}`:'';
+  const timeVal=e.y&&!e.unknownTime?`${String(e.h).padStart(2,'0')}:${String(e.mi).padStart(2,'0')}`:'';
+  const f=el(`<form class="edit card" style="margin-bottom:18px" autocomplete="off">
+    <label class="f full">${t('name')}<input id="f-name" required value="${esc(e.name||'')}"></label>
+    <label class="f">${t('date')}<input id="f-date" type="date" required value="${dateVal}" min="1900-01-01" max="2100-12-31"></label>
+    <label class="f">${t('time')}<input id="f-time" type="time" value="${timeVal}" ${e.unknownTime?'disabled':''}></label>
+    <label class="chk full"><input id="f-unk" type="checkbox" ${e.unknownTime?'checked':''}> ${t('unknownTime')}</label>
+    <label class="f full">${t('place')}<select id="f-city"><option value="" ${isCustom?'selected':''}>${t('custom')}</option>${cityOpts}</select></label>
+    <div id="custom" class="full" style="display:${isCustom?'grid':'none'};grid-template-columns:1fr 1fr 1fr;gap:12px">
+      <label class="f">${t('lat')}<input id="f-lat" type="number" step="0.0001" min="-89.9" max="89.9" value="${e.lat??''}"></label>
+      <label class="f">${t('lon')}<input id="f-lon" type="number" step="0.0001" min="-180" max="180" value="${e.lon??''}"></label>
+      <label class="f">${t('tz')}<select id="f-tz">${tzOpts}</select></label>
+    </div>
+    ${formErr?`<p class="err">${esc(formErr)}</p>`:''}
+    <div class="form-actions"><button type="button" class="btn" id="f-cancel">${t('cancel')}</button><button type="submit" class="btn primary">${t('save')}</button></div></form>`);
+  f.querySelector('#f-unk').onchange=ev=>{f.querySelector('#f-time').disabled=ev.target.checked};
+  f.querySelector('#f-city').onchange=ev=>{f.querySelector('#custom').style.display=ev.target.value===''?'grid':'none'};
+  f.querySelector('#f-cancel').onclick=()=>{editing=null;formErr='';render()};
+  f.onsubmit=ev=>{ev.preventDefault();
+    const name=f.querySelector('#f-name').value.trim(),dv=f.querySelector('#f-date').value,tv=f.querySelector('#f-time').value,unk=f.querySelector('#f-unk').checked,city=f.querySelector('#f-city').value;
+    if(!name||!dv){formErr=lang==='cs'?'Vyplňte jméno a datum.':'Name and date are required.';render();return}
+    const [y,mo,d]=dv.split('-').map(Number);let h=12,mi=0;
+    if(!unk){if(!tv){formErr=lang==='cs'?'Zadejte čas, nebo zaškrtněte, že ho neznáte.':'Enter a time or tick that it is unknown.';render();return}[h,mi]=tv.split(':').map(Number)}
+    let lat,lon,tz;
+    if(city){const c=CITIES.find(x=>x[0]===city);tz=c[1];lat=c[2];lon=c[3]}
+    else{lat=parseFloat(f.querySelector('#f-lat').value);lon=parseFloat(f.querySelector('#f-lon').value);tz=f.querySelector('#f-tz').value;
+      if(isNaN(lat)||isNaN(lon)){formErr=lang==='cs'?'Zadejte šířku a délku.':'Enter latitude and longitude.';render();return}}
+    const rec={id:e.id||('p'+Date.now().toString(36)),name,y,m:mo,d,h,mi,unknownTime:unk,city,lat,lon,tz};
+    try{rec.chart=ENGINE.chart(rec)}catch(err){formErr=String(err);render();return}
+    const i=people.findIndex(p=>p.id===rec.id);if(i>=0)people[i]=rec;else people.push(rec);
+    editing=null;formErr='';sel=rec.id;render()};
+  return f;
+}
+
+/* --- Chart --- */
+function wheelSVG(c){
+  const S=520,cx=S/2,cy=S/2,rO=250,rS=215,rH=185,rP=150,rIn=110;
+  const ang=L=>(180+(L-c.asc))*Math.PI/180;
+  const pt=(L,r)=>[cx+r*Math.cos(ang(L)),cy-r*Math.sin(ang(L))];
+  const arc=(L0,L1,r0,r1)=>{const [x0,y0]=pt(L0,r1),[x1,y1]=pt(L1,r1),[x2,y2]=pt(L1,r0),[x3,y3]=pt(L0,r0);return `M${x0},${y0}A${r1},${r1} 0 0 0 ${x1},${y1}L${x2},${y2}A${r0},${r0} 0 0 1 ${x3},${y3}Z`};
+  let s=`<svg class="wheel" viewBox="0 0 ${S} ${S}" role="img" aria-label="Natal chart wheel"><rect width="${S}" height="${S}" fill="var(--surface)" rx="12"/>`;
+  s+=`<circle cx="${cx}" cy="${cy}" r="${rO}" fill="none" stroke="var(--line)"/><circle cx="${cx}" cy="${cy}" r="${rS}" fill="none" stroke="var(--line)"/><circle cx="${cx}" cy="${cy}" r="${rH}" fill="none" stroke="var(--line)"/><circle cx="${cx}" cy="${cy}" r="${rIn}" fill="none" stroke="var(--line)"/>`;
+  SIGNS.forEach((sg,i)=>{const L0=i*30,L1=L0+30;s+=`<path d="${arc(L0,L1,rS,rO)}" fill="var(--${sg.el})" fill-opacity="0.14" stroke="var(--line)"/>`;const [x,y]=pt(L0+15,(rO+rS)/2);s+=`<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" font-size="20" fill="var(--${sg.el})">${sg.g}</text>`;
+    for(let k=5;k<30;k+=5){const [a,b]=pt(L0+k,rS),[d,e]=pt(L0+k,rS+(k%10?4:7));s+=`<line x1="${a}" y1="${b}" x2="${d}" y2="${e}" stroke="var(--line)"/>`}});
+  for(let h=0;h<12;h++){const L=c.asc+h*30;const [x0,y0]=pt(L,rIn),[x1,y1]=pt(L,rS);const major=h%3===0;s+=`<line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}" stroke="${major?'var(--fg)':'var(--line)'}" stroke-width="${major?1.5:1}"/>`;const [tx,ty]=pt(L+15,(rH+rIn)/2);s+=`<text x="${tx}" y="${ty}" text-anchor="middle" dominant-baseline="central" font-size="11" fill="var(--muted)" font-family="var(--font-body)">${h+1}</text>`}
+  const [ax,ay]=pt(c.asc,rO+12);s+=`<text x="${ax-4}" y="${ay}" text-anchor="end" dominant-baseline="central" font-size="11" font-weight="700" fill="var(--fg)" font-family="var(--font-body)">AC</text>`;
+  const [mx,my]=pt(c.mc,rO+12);s+=`<text x="${mx}" y="${my-2}" text-anchor="middle" font-size="11" font-weight="700" fill="var(--fg)" font-family="var(--font-body)">MC</text>`;
+  const pls=BODIES.slice(0,10).map(([k,g])=>({k,g,L:ENGINE.rev(c[k]),draw:ENGINE.rev(c[k])})).sort((a,b)=>a.L-b.L);
+  for(let pass=0;pass<4;pass++)for(let i=0;i<pls.length;i++){const a=pls[i],b=pls[(i+1)%pls.length];let d=ENGINE.rev(b.draw-a.draw);if(d<9){const push=(9-d)/2;a.draw=ENGINE.rev(a.draw-push);b.draw=ENGINE.rev(b.draw+push)}}
+  for(let i=0;i<pls.length;i++)for(let j=i+1;j<pls.length;j++){const a=aspect(pls[i].L,pls[j].L);if(a.type==='none'||a.type==='conjunction')continue;const [x0,y0]=pt(pls[i].L,rIn),[x1,y1]=pt(pls[j].L,rIn);const hard=a.type==='square'||a.type==='opposition';s+=`<line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}" stroke="${hard?'var(--fire)':'var(--earth)'}" stroke-opacity="${a.type==='sextile'?.45:.7}" stroke-width="1"/>`}
+  for(const p of pls){const [x,y]=pt(p.draw,rP+10),[tx,ty]=pt(p.L,rH),[ux,uy]=pt(p.draw,rP+24);s+=`<line x1="${tx}" y1="${ty}" x2="${ux}" y2="${uy}" stroke="var(--muted)" stroke-width="1"/><circle cx="${ux}" cy="${uy}" r="2" fill="var(--muted)"/><text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" font-size="19" fill="var(--fg)">${p.g}</text>`;const [dx,dy]=pt(p.draw,rP-10);s+=`<text x="${dx}" y="${dy}" text-anchor="middle" dominant-baseline="central" font-size="9" fill="var(--muted)" font-family="var(--font-body)">${Math.floor(degIn(p.L))}°</text>`}
+  return s+'</svg>';
+}
+function renderChart(m){
+  if(!people.length){m.append(el(`<div class="card empty">${t('empty')}</div>`));return}
+  m.append(personChips(sel,id=>{sel=id;render()}));
+  const p=people.find(x=>x.id===sel),c=p.chart;
+  const head=el(`<div style="margin-bottom:14px"><h2>${esc(p.name)}</h2><p class="muted small">${esc(bornLine(p))}${p.unknownTime?` · ${t('unknownTime').split('(')[0].trim()}`:''}</p></div>`);
+  m.append(head);
+  const wrap=el('<div class="chart-wrap"></div>');
+  wrap.append(el(`<div class="card" style="padding:8px">${wheelSVG(c)}</div>`));
+  let rows='';
+  for(const [k,g] of BODIES){const L=c[k],s=signOf(L);rows+=`<tr><td class="g">${g}</td><td>${t(k)}</td><td><span class="sw bg-${s.el}"></span>${s.g} ${sname(s)}</td><td class="num">${fmtDeg(L)}</td><td class="num">${houseOf(L,c.asc)}</td></tr>`}
+  wrap.append(el(`<div class="card" style="padding:8px 4px"><table class="pl"><thead><tr><th></th><th>${t('planet')}</th><th>${t('sign')}</th><th>${t('degree')}</th><th>${t('house')}</th></tr></thead><tbody>${rows}</tbody></table></div>`));
+  m.append(wrap);
+}
+
+/* --- Traits --- */
+function renderTraits(m){
+  if(!people.length){m.append(el(`<div class="card empty">${t('empty')}</div>`));return}
+  m.append(personChips(sel,id=>{sel=id;render()}));
+  const p=people.find(x=>x.id===sel),c=p.chart;
+  m.append(el(`<div style="margin-bottom:14px"><h2>${esc(p.name)}</h2><p class="muted small">${esc(bornLine(p))}</p></div>`));
+  const st=el('<div class="stack"></div>');
+  const items=[['sun','sunIn','sunLbl','sun'],['moon','moonIn','moonLbl','moon'],['asc','ascIn','ascLbl','asc'],['venus','venusIn','venusLbl','venus'],['mars','marsIn','marsLbl','mars']];
+  for(const [k,inKey,lbl,txt] of items){const s=signOf(c[k]);const kw=s[lang].kw.map(w=>`<span class="pill">${w}</span>`).join('');
+    st.append(el(`<div class="card trait"><div class="g el-${s.el}">${s.g}</div><div><h3>${t(inKey)} ${sloc(s)} <span>· ${t(lbl)}</span></h3>${k==='sun'?`<div class="kw">${kw}</div><p class="small muted">${t('element')}: ${t(s.el)} · ${t('modality')}: ${t(s.mod)} · ${t('ruler')}: ${t(s.ruler.toLowerCase())}</p>`:''}<p style="margin-top:6px">${s[lang][txt]}</p></div></div>`))}
+  const cnt={fire:0,earth:0,air:0,water:0},mod={cardinal:0,fixed:0,mutable:0};
+  for(const [k] of BODIES.slice(0,11)){const s=signOf(c[k]);cnt[s.el]++;mod[s.mod]++}
+  const bar=(k,v,max,cls)=>`<span>${t(k)}</span><div class="bar"><i class="${cls}" style="width:${v/max*100}%"></i></div><span class="num small muted">${v}</span>`;
+  st.append(el(`<div class="card"><h3>${t('balance')}</h3><p class="small muted" style="margin-bottom:10px">${t('balanceNote')}</p><div class="grid-2"><div class="bars">${['fire','earth','air','water'].map(k=>bar(k,cnt[k],11,'bg-'+k)).join('')}</div><div class="bars">${['cardinal','fixed','mutable'].map(k=>bar(k,mod[k],11,'')).join('').replaceAll('<i class=""','<i style="background:var(--accent)"')}</div></div></div>`));
+  m.append(st);
+}
+
+/* --- Compatibility --- */
+function ringSVG(score){const r=52,C=2*Math.PI*r;return `<svg class="ring" viewBox="0 0 120 120" role="img" aria-label="${score}"><circle cx="60" cy="60" r="${r}" fill="none" stroke="var(--surface-2)" stroke-width="10"/><circle cx="60" cy="60" r="${r}" fill="none" stroke="var(--accent)" stroke-width="10" stroke-linecap="round" stroke-dasharray="${C*score/100} ${C}" transform="rotate(-90 60 60)"/><text x="60" y="60" text-anchor="middle" dominant-baseline="central" font-size="30" font-weight="600" font-family="var(--font-display)" fill="var(--fg)">${score}</text></svg>`}
+const verdict=s=>s>=85?t('v90'):s>=70?t('v75'):s>=55?t('v60'):s>=40?t('v45'):t('v0');
+function renderCompat(m,preset){
+  if(people.length<2){m.append(el(`<div class="card empty">${t('needTwo')}</div>`));return}
+  let [a,b]=pairSel;if(!people.find(p=>p.id===a))a=people[0].id;if(!people.find(p=>p.id===b)||b===a)b=people.find(p=>p.id!==a).id;pairSel=[a,b];
+  const opts=id=>people.map(p=>`<option value="${p.id}" ${p.id===id?'selected':''}>${esc(p.name)} ${signOf(p.chart.sun).g}</option>`).join('');
+  const pick=el(`<div class="card pair-pick" style="margin-bottom:18px"><label class="f">${t('pickTwo')}<select id="pa">${opts(a)}</select></label><div class="vs">×</div><label class="f">&nbsp;<select id="pb">${opts(b)}</select></label></div>`);
+  pick.querySelector('#pa').onchange=e=>{pairSel=[e.target.value,pairSel[1]];render()};
+  pick.querySelector('#pb').onchange=e=>{pairSel=[pairSel[0],e.target.value];render()};
+  m.append(pick);
+  if(a===b){m.append(el(`<p class="muted">${t('sameTwo')}</p>`));return}
+  const A=people.find(p=>p.id===a),B=people.find(p=>p.id===b),r=compat(A,B);
+  const sa=signOf(A.chart.sun),sb=signOf(B.chart.sun);
+  m.append(el(`<div class="card score" style="margin-bottom:18px">${ringSVG(r.score)}<div><p class="small muted" style="text-transform:uppercase;letter-spacing:.06em;font-weight:700">${t('score')}</p><h2>${esc(A.name)} × ${esc(B.name)}</h2><p class="verdict" style="margin:4px 0 8px">${verdict(r.score)}</p><p class="small"><span class="pill"><span class="g el-${sa.el}">${sa.g}</span>${sname(sa)}</span> <span class="pill"><span class="g el-${sb.el}">${sb.g}</span>${sname(sb)}</span></p><p style="margin-top:8px">${T[lang].elpairs[r.elKey]}</p></div></div>`));
+  const sorted=[...r.factors].sort((x,y)=>y.w*(y.s-.5)-x.w*(x.s-.5));
+  const fx=el(`<div class="card"><h3 style="margin-bottom:10px">${t('breakdown')}</h3><div class="factors"></div></div>`);
+  const sub=k=>k.replaceAll('{A}',esc(A.name)).replaceAll('{B}',esc(B.name));
+  for(const f of sorted){const P=T[lang].pairs[f.k],pos=f.s>=.5,pts=Math.round((f.s-.5)*f.w*20);
+    const asp=f.asp.type==='none'?t('none'):`${t(f.asp.type)} (${t('orb')} ${f.asp.orb.toFixed(1)}°)`;
+    fx.querySelector('.factors').append(el(`<div class="factor ${pos?'pos':'neg'}"><span class="t">${sub(P[0])} <span class="muted" style="font-weight:500">· ${P[1]}</span></span><span class="s">${pts>0?'+':''}${pts}</span><span class="d">${sub(pos?P[2]:P[3])} <span class="muted">— ${asp}</span></span></div>`))}
+  m.append(fx);
+}
+
+/* --- Matrix --- */
+function renderMatrix(m){
+  if(people.length<2){m.append(el(`<div class="card empty">${t('needTwo')}</div>`));return}
+  m.append(el(`<div style="margin-bottom:14px"><h2>${t('matrixTitle')}</h2><p class="muted small">${t('matrixNote')}</p></div>`));
+  const n=people.length;const sc=Array.from({length:n},()=>Array(n).fill(null));
+  for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){const r=compat(people[i],people[j]).score;sc[i][j]=sc[j][i]=r}
+  let h=`<table class="mx"><thead><tr><th></th>${people.map(p=>`<th class="col">${esc(p.name)}</th>`).join('')}</tr></thead><tbody>`;
+  for(let i=0;i<n;i++){h+=`<tr><th>${esc(people[i].name)} <span class="muted">${signOf(people[i].chart.sun).g}</span></th>`;
+    for(let j=0;j<n;j++){if(i===j){h+='<td class="self">—</td>';continue}const v=sc[i][j],p=Math.round(Math.max(0,(v-10))/85*100);h+=`<td class="${v>=60?'hi':''}" data-i="${i}" data-j="${j}" style="background:color-mix(in oklab,var(--accent) ${p}%,var(--surface-2))" tabindex="0">${v}</td>`}
+    h+='</tr>'}
+  h+='</tbody></table>';
+  const card=el(`<div class="card"><div class="matrix-wrap">${h}</div><div class="legend"><span>${t('low')}</span><span class="ramp"></span><span>${t('high')}</span></div></div>`);
+  const tip=document.getElementById('tip');
+  card.querySelectorAll('td[data-i]').forEach(td=>{
+    const i=+td.dataset.i,j=+td.dataset.j;
+    td.onclick=()=>{pairSel=[people[i].id,people[j].id];tab='compat';render()};
+    td.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();td.onclick()}};
+    td.onmouseenter=e=>{tip.textContent=`${people[i].name} × ${people[j].name}: ${sc[i][j]} · ${verdict(sc[i][j])}`;tip.hidden=false};
+    td.onmousemove=e=>{tip.style.left=Math.min(e.clientX+12,window.innerWidth-tip.offsetWidth-8)+'px';tip.style.top=(e.clientY+14)+'px'};
+    td.onmouseleave=()=>{tip.hidden=true};
+  });
+  m.append(card);
+}
+
+/* ============ WIRING ============ */
+document.getElementById('lang-cs').onclick=()=>{lang='cs';render()};
+document.getElementById('lang-en').onclick=()=>{lang='en';render()};
+document.querySelectorAll('nav.tabs button').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;editing=null;render()});
+if(location.hash){const h=location.hash.slice(1);if(['people','chart','traits','compat','matrix'].includes(h))tab=h}
+render();
+</script>
