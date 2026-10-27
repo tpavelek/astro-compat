@@ -1,0 +1,52 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main, master]
+    paths: ['deliverables/**', '.github/workflows/pages.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build site from deliverables
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p _site
+          # astro-compat.html is authored without an <html> skeleton (the claude.ai artifact host adds one); add it here.
+          {
+            printf '<!doctype html>\n<html lang="cs">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">\n<meta name="color-scheme" content="light dark">\n</head>\n<body>\n'
+            cat deliverables/astro-compat.html
+            printf '\n</body>\n</html>\n'
+          } > _site/index.html
+          cp deliverables/places.json _site/places.json
+          touch _site/.nojekyll
+          ls -la _site
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
