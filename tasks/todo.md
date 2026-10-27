@@ -35,6 +35,17 @@ Review (v3):
 - [x] Footer: fallback clause removed from the disclaimer; the engine line explains the simplified model only when the library failed to load
 - [x] Published v4 (version id 1793131262-e592)
 
+## v6 (2026-10-27, late) — synastry, composite, transits
+
+- [x] Aspect legend under the wheel + hover/tap pairing of lines and rows (v5.1)
+- [x] Compatibility view switch: Rozbor | Synastrické kolo | Kompozit. Synastry = bi-wheel (A's chart and houses inside, B's planets outside, cross-aspects Sun–Saturn + AC with normal orbs, swap button) + cross-aspect list with hover pairing. Composite = midpoint chart (shorter-arc midpoints for every point, equal houses from the composite AC) with wheel, table, Sun/Moon/AC blurbs and aspects.
+- [x] "Dnes / Today" tab: person chips + date picker (noon UTC of the chosen day), natal-inside/transits-outside bi-wheel, Moon-of-the-day pill, transit aspect list (orbs 3°, sextile 2°, natal Sun–Pluto + AC/MC vs transiting Sun–Pluto) sorted slow-first then by orb, each with a "that day × natal" reading and a fast/slow tag.
+- [x] Guide: "Two charts together" bullets (synastry, composite, transits) in both languages
+- [x] Refactor: placementsTable(), aspectsCard(), aspectRow(), wireAspectHover(), legendHTML(), biWheelSVG() shared by natal, composite, synastry and transit views
+- [x] Published v6 (version id 1793134334-0407)
+
+Review (v6): Chromium 1440px, CS. Today tab for Eva on 2026-10-27: outer ring places Sun early Scorpio, Pluto Aquarius, Neptune/Saturn at the Pisces–Aries border (matches the real sky); 13 transit aspects listed, slow ones first (Neptune □ Saturn 0.3° … Pluto □ AC 2.8°), then fast. Synastry Eva/Marek: both rings and cross lines drawn; Composite Eva+Marek: Sun 17° Capricorn, Moon 18° Aries, table and aspects render. No app console errors. Not verified: swap button, transit date change, phone width of the bi-wheel, composite midpoint vs a reference program.
+
 ## v5 (2026-10-27, night) — angles, points, highlights
 
 - [x] DC and IC angles (v4.3); "for entertainment only" sentence removed (v4.1); footer merged into one paragraph (v4.2); tooltips removed from buttons/inputs/chips/matrix cells, tap tooltips auto-hide after 4 s (v4.4)

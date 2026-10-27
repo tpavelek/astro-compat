@@ -212,6 +212,7 @@ svg.wheel.hl line.asp.hl{stroke-opacity:1;stroke-width:2.5}
   <button role="tab" data-tab="traits" data-i="tab_traits"></button>
   <button role="tab" data-tab="compat" data-i="tab_compat"></button>
   <button role="tab" data-tab="matrix" data-i="tab_matrix"></button>
+  <button role="tab" data-tab="today" data-i="tab_today"></button>
   <button role="tab" data-tab="guide" data-i="tab_guide"></button>
 </nav>
 
@@ -367,6 +368,11 @@ const T={
   born:'Born',empty:'No people yet. Add the first one.',pickTwo:'Pick two people',sameTwo:'Pick two different people.',needTwo:'Add at least two people to compare.',
   planet:'Body',sign:'Sign',degree:'Degree',house:'House',meaning:'Stands for',aspects:'Aspects between planets',legendSoft:'trine, sextile: harmonious',legendHard:'square, opposition: tense',legendHint:'Hover a line or a row below to match them',noAspects:'No major aspects within orb.',houseSystem:'Houses',placidus:'Placidus',equal:'Equal',equalForced:'equal (polar latitude)',
   sun:'Sun',moon:'Moon',mercury:'Mercury',venus:'Venus',mars:'Mars',jupiter:'Jupiter',saturn:'Saturn',uranus:'Uranus',neptune:'Neptune',pluto:'Pluto',asc:'Ascendant',dc:'Descendant',mc:'Midheaven',ic:'Imum Coeli',node:'North Node',snode:'South Node',lilith:'Lilith',pof:'Part of Fortune',
+  tab_today:'Today',synView:['Breakdown','Synastry wheel','Composite'],synTitle:'Synastry: {A} inside, {B} outside',synNote:'The inner wheel and the houses belong to {A}; {B}\'s planets run around the outside. Lines connect planets of the two people that form an aspect (Sun to Saturn and the Ascendant).',crossAspects:'Aspects between the two charts',swap:'Swap inside and outside',
+  compTitle:'Composite chart: {A} + {B}',compNote:'The relationship\'s own chart: every point is the midpoint between the two people\'s positions, houses are equal houses from the composite Ascendant. Read it as the couple\'s personality, not either person\'s.',compSun:'Relationship Sun {sloc}',compMoon:'Relationship Moon {sloc}',compAsc:'Relationship Ascendant {sloc}',
+  transitDate:'Date',transitTitle:'Sky on {date} against {name}\'s chart',transitNote:'Natal chart inside, the planets of the chosen day outside. Only aspects within 3° (sextile 2°) are listed. Slow planets (Jupiter to Pluto) matter most and last weeks to months; fast ones pass in days.',noTransits:'No exact transits on this day.',fast:'fast, days',slow:'slow, weeks to months',moonToday:'Moon {sloc} that day: {kw}',
+  tMean:{sun:'spotlight and vitality',moon:'the mood of the day',mercury:'thoughts and conversations',venus:'pleasure and affection',mars:'energy and friction',jupiter:'growth and luck',saturn:'tests and discipline',uranus:'sudden change',neptune:'fog and dreams',pluto:'deep transformation'},
+  tone:{conjunction:'Intensified.',sextile:'An opening, easy to use.',square:'Friction; handle with care.',trine:'Flows easily.',opposition:'Pulled in two directions.'},natalLbl:'natal',todayLbl:'that day',
   hlTitle:'Chart highlights',hlRuler:'Chart ruler',hlRulerText:'{planet} {sloc}, house {h}. The planet ruling the rising sign colours the whole chart; its sign and house show how and where you steer your life.',hlPhase:'Moon phase at birth',hlRetro:'Retrograde planets',hlRetroNone:'none',hlRetroText:'A retrograde planet (℞) appeared to move backwards from Earth. Pop astrology reads its function as turned inward, slower, or revisited later in life.',hlStellium:'Stelliums',hlStelliumNone:'none (no sign or house holds three or more planets)',hlStelliumSign:'{n} planets in {sign} ({names}): this sign dominates the personality',hlStelliumHouse:'{n} planets in house {h} ({names}): {theme} is a central theme',hlHemi:'Emphasis',hlAbove:'Above the horizon (houses 7–12): {n} of 10 planets. Outward-looking, public, shaped by other people.',hlBelow:'Below the horizon (houses 1–6): {n} of 10 planets. Inward-looking, private, self-made.',hlEast:'Rising half (houses 10–3): {n} of 10 planets. Self-directed, makes its own way.',hlWest:'Setting half (houses 4–9): {n} of 10 planets. Relationship-oriented, responds to others.',hlBalanced:'Evenly split, no clear emphasis.',
   phases:[['New Moon','instinctive, starts fresh, self-focused'],['Waxing Crescent','eager, builds, breaks from the past'],['First Quarter','acts under pressure, thrives in a crisis'],['Waxing Gibbous','perfecting, analytical, seeks meaning'],['Full Moon','relationship-driven, expressive, seeks completion'],['Waning Gibbous','the teacher, shares what was learned'],['Last Quarter','the reformer, questions structures'],['Balsamic Moon','old soul, closes cycles, visionary']],
   mean:{sun:'identity, ego, vitality',moon:'feelings, needs, habits',mercury:'mind, speech, learning',venus:'love, taste, pleasure',mars:'drive, anger, desire',jupiter:'growth, luck, beliefs',saturn:'discipline, limits, fear',uranus:'change, rebellion (generational)',neptune:'dreams, illusion (generational)',pluto:'power, transformation (generational)',asc:'first impression, body, approach to life',dc:'partnership, what you seek in others',mc:'career, reputation, public role',ic:'home, roots, private self',node:'life direction, what to grow into',snode:'comfort zone, inherited habits',lilith:'the wild, repressed side; taboo and raw desire',pof:'where luck and ease come naturally'},
@@ -402,7 +408,7 @@ const T={
   elpairs:{'fire-fire':'Two flames: passionate, fast, loud and occasionally a wildfire.','earth-earth':'Two rocks: stable, loyal, practical, possibly a little dull on a Saturday night.','air-air':'Two breezes: endless talk, shared ideas, few dishes done.','water-water':'Two oceans: deep empathy and moods that amplify each other.','fire-air':'Air feeds fire: inspiration, fun and momentum; someone has to remember the keys.','earth-water':'Water nourishes earth: nurturing, secure and homely; watch out for stagnation.','fire-earth':'Fire wants to go, earth wants a plan. Productive when they listen, exhausting when they do not.','air-water':'Air thinks, water feels. Fascinating and confusing in equal measure.','fire-water':'Steam. The attraction is strong, so is the risk of someone being put out.','earth-air':'Earth wants it done, air wants it discussed. Works with patience on both sides.'},
   guide:{
    nav:['What a natal chart is','The big three','Planets','Signs, elements, modalities','Houses','Aspects','The compatibility score','Other points and highlights','Accuracy and limits'],
-   points:`<ul><li><strong>Angles</strong>: Ascendant (AC, east), Descendant (DC, west), Midheaven (MC, top) and Imum Coeli (IC, bottom) are the four corners of the chart: self, partner, public role, home.</li><li><strong>Lunar nodes</strong> ☊ ☋: where the Moon's orbit crosses the Sun's path. The North Node is read as the direction of growth, the South Node as the comfort zone. The app uses the mean node.</li><li><strong>Black Moon Lilith</strong> ⚸: the Moon's apogee, read as the untamed, repressed or taboo side.</li><li><strong>Part of Fortune</strong> ⊗: Ascendant + Moon − Sun (reversed for night births); where things flow with least effort.</li><li><strong>Chart ruler</strong>: the planet that rules the rising sign (Aries → Mars, Taurus → Venus …). Its placement is read as the way you steer your life.</li><li><strong>Retrograde</strong> ℞: a planet that appeared to move backwards at birth (Mercury about 20 % of the time, the outer planets about 40 %). Read as that function turned inward.</li><li><strong>Moon phase</strong>: the Sun–Moon angle at birth, from New (0°) to Balsamic (315–360°); a personality type in its own right.</li><li><strong>Stellium</strong>: three or more planets in one sign or house. That sign or life area dominates.</li><li><strong>Hemispheres</strong>: planets above the horizon (houses 7–12) point outward and public, below it inward and private; the rising half (houses 10–3) self-directed, the setting half (4–9) relationship-oriented.</li></ul>`,
+   points:`<ul><li><strong>Angles</strong>: Ascendant (AC, east), Descendant (DC, west), Midheaven (MC, top) and Imum Coeli (IC, bottom) are the four corners of the chart: self, partner, public role, home.</li><li><strong>Lunar nodes</strong> ☊ ☋: where the Moon's orbit crosses the Sun's path. The North Node is read as the direction of growth, the South Node as the comfort zone. The app uses the mean node.</li><li><strong>Black Moon Lilith</strong> ⚸: the Moon's apogee, read as the untamed, repressed or taboo side.</li><li><strong>Part of Fortune</strong> ⊗: Ascendant + Moon − Sun (reversed for night births); where things flow with least effort.</li><li><strong>Chart ruler</strong>: the planet that rules the rising sign (Aries → Mars, Taurus → Venus …). Its placement is read as the way you steer your life.</li><li><strong>Retrograde</strong> ℞: a planet that appeared to move backwards at birth (Mercury about 20 % of the time, the outer planets about 40 %). Read as that function turned inward.</li><li><strong>Moon phase</strong>: the Sun–Moon angle at birth, from New (0°) to Balsamic (315–360°); a personality type in its own right.</li><li><strong>Stellium</strong>: three or more planets in one sign or house. That sign or life area dominates.</li><li><strong>Hemispheres</strong>: planets above the horizon (houses 7–12) point outward and public, below it inward and private; the rising half (houses 10–3) self-directed, the setting half (4–9) relationship-oriented.</li></ul><h3>Two charts together</h3><ul><li><strong>Synastry</strong>: one person's planets laid over the other's chart. The cross-aspects show where the two people click or clash; the Compatibility score is a summary of exactly these.</li><li><strong>Composite chart</strong>: the relationship's own chart, built from the midpoints of the two people's positions. Its Sun is "what the couple is about", its Moon how it feels at home, its Ascendant how it looks from outside.</li><li><strong>Transits</strong>: where the planets are today (or any day) against your natal chart. A transiting planet within a few degrees of a natal point "activates" it: fast planets for days, Jupiter and Saturn for weeks, the outer planets for months.</li></ul>`,
    intro:`<p>A natal (birth) chart is a map of the sky at the moment and place you were born, drawn from the Earth's point of view. The ring is the <strong>zodiac</strong>: the Sun's yearly path split into twelve 30° slices, the signs. Each planet is placed on that ring by its <strong>ecliptic longitude</strong> (0° = start of Aries). The Earth also turns once a day, so the chart is rotated by birth time and place: that rotation gives the <strong>Ascendant</strong> and the <strong>houses</strong>.</p><p>Pop astrology reads it in three layers: <em>what</em> (the planet: which part of you), <em>how</em> (the sign: the style it works in) and <em>where</em> (the house: the area of life it shows up in).</p>`,
    big3:`<ul><li><strong>Sun</strong>: your core identity, will and vitality. This is the "star sign" from horoscope columns. It changes sign roughly once a month.</li><li><strong>Moon</strong>: feelings, instincts, what you need to feel safe, how you were mothered and how you nurture. It moves about 13° a day, so it changes sign every 2–3 days; a wrong birth time can shift it a few degrees.</li><li><strong>Ascendant (rising sign)</strong>: the sign that was rising on the eastern horizon. Your first impression, body language, the "mask" and the way you start things. It changes sign about every two hours, which is why birth time matters.</li></ul>`,
    planets:`<p>Each planet is a function. The sign it is in describes the style; the house, the life area.</p>`,
@@ -417,6 +423,11 @@ const T={
   born:'Narození',empty:'Zatím nikdo. Přidejte první osobu.',pickTwo:'Vyberte dva lidi',sameTwo:'Vyberte dva různé lidi.',needTwo:'Pro porovnání přidejte aspoň dva lidi.',
   planet:'Těleso',sign:'Znamení',degree:'Stupeň',house:'Dům',meaning:'Znamená',aspects:'Aspekty mezi planetami',legendSoft:'trigon, sextil: harmonické',legendHard:'kvadratura, opozice: napjaté',legendHint:'Najeďte na čáru nebo na řádek níže a spárují se',noAspects:'Žádný hlavní aspekt v orbisu.',houseSystem:'Domy',placidus:'Placidus',equal:'Rovné',equalForced:'rovné (polární šířka)',
   sun:'Slunce',moon:'Měsíc',mercury:'Merkur',venus:'Venuše',mars:'Mars',jupiter:'Jupiter',saturn:'Saturn',uranus:'Uran',neptune:'Neptun',pluto:'Pluto',asc:'Ascendent',dc:'Descendent',mc:'Střed nebes',ic:'Hlubina nebes',node:'Severní uzel',snode:'Jižní uzel',lilith:'Lilith',pof:'Bod štěstí',
+  tab_today:'Dnes',synView:['Rozbor','Synastrické kolo','Kompozit'],synTitle:'Synastrie: {A} uvnitř, {B} vně',synNote:'Vnitřní kolo a domy patří osobě {A}; planety osoby {B} běží po vnějším okraji. Čáry spojují planety obou lidí, které tvoří aspekt (Slunce až Saturn a Ascendent).',crossAspects:'Aspekty mezi oběma horoskopy',swap:'Prohodit vnitřek a vnějšek',
+  compTitle:'Kompozitní horoskop: {A} + {B}',compNote:'Vlastní horoskop vztahu: každý bod je středem mezi pozicemi obou lidí, domy jsou rovné domy od kompozitního Ascendentu. Čtěte ho jako povahu dvojice, ne jednotlivce.',compSun:'Slunce vztahu {sloc}',compMoon:'Měsíc vztahu {sloc}',compAsc:'Ascendent vztahu {sloc}',
+  transitDate:'Datum',transitTitle:'Obloha {date} proti horoskopu: {name}',transitNote:'Uvnitř horoskop narození, vně planety zvoleného dne. Vypsány jsou jen aspekty do 3° (sextil 2°). Nejvíc znamenají pomalé planety (Jupiter až Pluto), trvají týdny až měsíce; rychlé přejdou za dny.',noTransits:'Tento den žádné přesné tranzity.',fast:'rychlá, dny',slow:'pomalá, týdny až měsíce',moonToday:'Měsíc ten den {sloc}: {kw}',
+  tMean:{sun:'pozornost a vitalita',moon:'nálada dne',mercury:'myšlenky a hovory',venus:'potěšení a náklonnost',mars:'energie a tření',jupiter:'růst a štěstí',saturn:'zkoušky a kázeň',uranus:'náhlá změna',neptune:'mlha a sny',pluto:'hluboká proměna'},
+  tone:{conjunction:'Zesíleno.',sextile:'Příležitost, snadno využitelná.',square:'Tření; opatrně.',trine:'Plyne samo.',opposition:'Tah na dvě strany.'},natalLbl:'natální',todayLbl:'ten den',
   hlTitle:'Zvláštnosti horoskopu',hlRuler:'Vládce horoskopu',hlRulerText:'{planet} {sloc}, {h}. dům. Planeta vládnoucí vycházejícímu znamení zbarvuje celý horoskop; její znamení a dům ukazují, jak a kde řídíte svůj život.',hlPhase:'Fáze Měsíce při narození',hlRetro:'Retrográdní planety',hlRetroNone:'žádná',hlRetroText:'Retrográdní planeta (℞) se při narození zdánlivě pohybovala pozpátku. Populární astrologie čte její funkci jako obrácenou dovnitř, pomalejší nebo znovu otevřenou později v životě.',hlStellium:'Stellia',hlStelliumNone:'žádné (v žádném znamení ani domě nejsou tři a více planet)',hlStelliumSign:'{n} planety v znamení {sign} ({names}): toto znamení povaze dominuje',hlStelliumHouse:'{n} planety v {h}. domě ({names}): ústřední téma je {theme}',hlHemi:'Těžiště',hlAbove:'Nad obzorem (domy 7–12): {n} z 10 planet. Obrácený ven, veřejný, formovaný druhými.',hlBelow:'Pod obzorem (domy 1–6): {n} z 10 planet. Obrácený dovnitř, soukromý, sám svého štěstí strůjce.',hlEast:'Východní polovina (domy 10–3): {n} z 10 planet. Řídí se sám, jde vlastní cestou.',hlWest:'Západní polovina (domy 4–9): {n} z 10 planet. Zaměřený na vztahy, reaguje na druhé.',hlBalanced:'Rovnoměrně rozložené, bez jasného těžiště.',
   phases:[['Nov','instinktivní, začíná nanovo, soustředěný na sebe'],['Dorůstající srpek','dychtivý, buduje, odpoutává se od minulosti'],['První čtvrt','jedná pod tlakem, v krizi se mu daří'],['Dorůstající Měsíc','zdokonaluje, analyzuje, hledá smysl'],['Úplněk','žije vztahy, výrazný, hledá naplnění'],['Couvající Měsíc','učitel, předává, co se naučil'],['Poslední čtvrt','reformátor, zpochybňuje zavedené'],['Balzamický Měsíc','stará duše, uzavírá cykly, vizionář']],
   mean:{sun:'identita, ego, vitalita',moon:'city, potřeby, návyky',mercury:'myšlení, řeč, učení',venus:'láska, vkus, požitek',mars:'tah, zlost, touha',jupiter:'růst, štěstí, přesvědčení',saturn:'kázeň, meze, strach',uranus:'změna, vzpoura (generační)',neptune:'sny, iluze (generační)',pluto:'moc, proměna (generační)',asc:'první dojem, tělo, přístup k životu',dc:'partnerství, co hledáte v druhých',mc:'kariéra, pověst, veřejná role',ic:'domov, kořeny, soukromé já',node:'životní směr, kam růst',snode:'komfortní zóna, zděděné návyky',lilith:'divoká, potlačená stránka; tabu a syrová touha',pof:'kde přichází štěstí a lehkost samy'},
@@ -452,7 +463,7 @@ const T={
   elpairs:{'fire-fire':'Dva plameny: vášnivé, rychlé, hlučné a občas lesní požár.','earth-earth':'Dva kameny: stabilní, věrní, praktičtí, v sobotu večer možná trochu nuda.','air-air':'Dva vánky: nekonečné rozhovory, společné nápady, málo umytého nádobí.','water-water':'Dva oceány: hluboká empatie a nálady, které se navzájem zesilují.','fire-air':'Vzduch živí oheň: inspirace, zábava a tah na branku; někdo si musí pamatovat klíče.','earth-water':'Voda zavlažuje zemi: pečující, bezpečné a domácké; pozor na stojaté vody.','fire-earth':'Oheň chce vyrazit, země chce plán. Produktivní, když si naslouchají, vyčerpávající, když ne.','air-water':'Vzduch myslí, voda cítí. Fascinující i matoucí stejným dílem.','fire-water':'Pára. Přitažlivost je silná, stejně jako riziko, že někdo uhasne.','earth-air':'Země to chce mít hotové, vzduch to chce probrat. Funguje s trpělivostí na obou stranách.'},
   guide:{
    nav:['Co je horoskop','Velká trojka','Planety','Znamení, živly, kvality','Domy','Aspekty','Skóre shody','Další body a zvláštnosti','Přesnost a meze'],
-   points:`<ul><li><strong>Úhly</strong>: Ascendent (AC, východ), Descendent (DC, západ), Střed nebes (MC, vrchol) a Hlubina nebes (IC, dno) jsou čtyři rohy horoskopu: já, partner, veřejná role, domov.</li><li><strong>Měsíční uzly</strong> ☊ ☋: kde dráha Měsíce protíná dráhu Slunce. Severní uzel se čte jako směr růstu, Jižní jako komfortní zóna. Aplikace používá střední uzel.</li><li><strong>Černá Luna Lilith</strong> ⚸: odzemí Měsíce, čte se jako nezkrocená, potlačená nebo tabuizovaná stránka.</li><li><strong>Bod štěstí</strong> ⊗: Ascendent + Měsíc − Slunce (pro noční narození obráceně); kde věci plynou s nejmenším úsilím.</li><li><strong>Vládce horoskopu</strong>: planeta vládnoucí vycházejícímu znamení (Beran → Mars, Býk → Venuše …). Její postavení se čte jako způsob, jakým řídíte svůj život.</li><li><strong>Retrograd</strong> ℞: planeta, která se při narození zdánlivě pohybovala pozpátku (Merkur asi 20 % času, vnější planety asi 40 %). Čte se jako funkce obrácená dovnitř.</li><li><strong>Fáze Měsíce</strong>: úhel Slunce–Měsíc při narození, od Novu (0°) po balzamický Měsíc (315–360°); samostatný typ osobnosti.</li><li><strong>Stellium</strong>: tři a více planet v jednom znamení nebo domě. To znamení či oblast života dominuje.</li><li><strong>Polosféry</strong>: planety nad obzorem (domy 7–12) míří ven a do veřejnosti, pod ním dovnitř a do soukromí; východní polovina (domy 10–3) řídí sama sebe, západní (4–9) žije vztahy.</li></ul>`,
+   points:`<ul><li><strong>Úhly</strong>: Ascendent (AC, východ), Descendent (DC, západ), Střed nebes (MC, vrchol) a Hlubina nebes (IC, dno) jsou čtyři rohy horoskopu: já, partner, veřejná role, domov.</li><li><strong>Měsíční uzly</strong> ☊ ☋: kde dráha Měsíce protíná dráhu Slunce. Severní uzel se čte jako směr růstu, Jižní jako komfortní zóna. Aplikace používá střední uzel.</li><li><strong>Černá Luna Lilith</strong> ⚸: odzemí Měsíce, čte se jako nezkrocená, potlačená nebo tabuizovaná stránka.</li><li><strong>Bod štěstí</strong> ⊗: Ascendent + Měsíc − Slunce (pro noční narození obráceně); kde věci plynou s nejmenším úsilím.</li><li><strong>Vládce horoskopu</strong>: planeta vládnoucí vycházejícímu znamení (Beran → Mars, Býk → Venuše …). Její postavení se čte jako způsob, jakým řídíte svůj život.</li><li><strong>Retrograd</strong> ℞: planeta, která se při narození zdánlivě pohybovala pozpátku (Merkur asi 20 % času, vnější planety asi 40 %). Čte se jako funkce obrácená dovnitř.</li><li><strong>Fáze Měsíce</strong>: úhel Slunce–Měsíc při narození, od Novu (0°) po balzamický Měsíc (315–360°); samostatný typ osobnosti.</li><li><strong>Stellium</strong>: tři a více planet v jednom znamení nebo domě. To znamení či oblast života dominuje.</li><li><strong>Polosféry</strong>: planety nad obzorem (domy 7–12) míří ven a do veřejnosti, pod ním dovnitř a do soukromí; východní polovina (domy 10–3) řídí sama sebe, západní (4–9) žije vztahy.</li></ul><h3>Dva horoskopy dohromady</h3><ul><li><strong>Synastrie</strong>: planety jednoho člověka položené přes horoskop druhého. Vzájemné aspekty ukazují, kde si ti dva sednou nebo narazí; skóre shody je shrnutím právě těchto aspektů.</li><li><strong>Kompozitní horoskop</strong>: vlastní horoskop vztahu, sestavený ze středů mezi pozicemi obou lidí. Jeho Slunce je „o čem ta dvojice je“, Měsíc jak jí je doma, Ascendent jak působí navenek.</li><li><strong>Tranzity</strong>: kde jsou planety dnes (nebo kterýkoli den) proti horoskopu narození. Tranzitní planeta do několika stupňů od natálního bodu ho „aktivuje“: rychlé planety na dny, Jupiter a Saturn na týdny, vnější planety na měsíce.</li></ul>`,
    intro:`<p>Horoskop narození (nativita) je mapa oblohy v okamžiku a na místě vašeho narození, kreslená z pohledu Země. Prstenec je <strong>zvěrokruh</strong>: roční dráha Slunce rozdělená na dvanáct dílů po 30°, znamení. Každá planeta se do něj umístí podle své <strong>ekliptikální délky</strong> (0° = začátek Berana). Země se navíc jednou denně otočí, takže horoskop je natočen podle času a místa narození: z toho vzniká <strong>Ascendent</strong> a <strong>domy</strong>.</p><p>Populární astrologie to čte ve třech vrstvách: <em>co</em> (planeta: která část vás), <em>jak</em> (znamení: styl, jakým působí) a <em>kde</em> (dům: oblast života, kde se to projeví).</p>`,
    big3:`<ul><li><strong>Slunce</strong>: jádro osobnosti, vůle, vitalita. To je „znamení“ z novinových horoskopů. Mění se zhruba jednou za měsíc.</li><li><strong>Měsíc</strong>: city, instinkty, co potřebujete k pocitu bezpečí, jak jste byli opečováváni a jak pečujete. Posune se asi o 13° denně, znamení mění každé 2–3 dny; špatný čas narození ho může posunout o několik stupňů.</li><li><strong>Ascendent</strong>: znamení, které právě vycházelo na východním obzoru. První dojem, řeč těla, „maska“ a způsob, jakým začínáte. Mění se asi každé dvě hodiny, proto na čase narození záleží.</li></ul>`,
    planets:`<p>Každá planeta je jedna funkce. Znamení, ve kterém stojí, popisuje styl; dům oblast života.</p>`,
@@ -476,7 +487,22 @@ const degIn=lon=>ENGINE.rev(lon)%30;
 const fmtDeg=lon=>{const d=degIn(lon),a=Math.floor(d),m=Math.floor((d-a)*60);return `${a}°${String(m).padStart(2,'0')}′`};
 const houseOf=(lon,c)=>{for(let i=1;i<=12;i++){const n=i%12+1;if(ENGINE.rev(lon-c[i])<ENGINE.rev(c[n]-c[i]))return i}return 12};
 const ASPECTS=[['conjunction',0,8,1.0],['opposition',180,8,0.45],['trine',120,8,0.9],['square',90,7,0.2],['sextile',60,5,0.75]];
-function aspect(a,b){let d=Math.abs(ENGINE.rev(a)-ENGINE.rev(b));if(d>180)d=360-d;for(const [t,ang,orb,s] of ASPECTS){const o=Math.abs(d-ang);if(o<=orb)return {type:t,orb:o,score:s}}return {type:'none',orb:null,score:0.5}}
+function aspect(a,b,orbs){let d=Math.abs(ENGINE.rev(a)-ENGINE.rev(b));if(d>180)d=360-d;for(const [t,ang,orb,s] of ASPECTS){const o=Math.abs(d-ang);if(o<=(orbs?orbs[t]:orb))return {type:t,orb:o,score:s}}return {type:'none',orb:null,score:0.5}}
+const TRANSIT_ORBS={conjunction:3,opposition:3,trine:3,square:3,sextile:2};
+const mid=(a,b)=>ENGINE.rev(a+(((b-a+540)%360)-180)/2);          // midpoint on the shorter arc
+const SYN_KEYS=['sun','moon','mercury','venus','mars','jupiter','saturn','asc'];
+function compositeChart(A,B){
+  const a=A.chart,b=B.chart,c={retro:{},system:'equal',day:true};
+  for(const k of [...BODIES.map(x=>x[0]),...POINTS.map(x=>x[0])])c[k]=mid(a[k],b[k]);
+  c.dc=ENGINE.rev(c.asc+180);c.ic=ENGINE.rev(c.mc+180);c.snode=ENGINE.rev(c.node+180);
+  c.cusps=Array(13).fill(0);for(let i=1;i<=12;i++)c.cusps[i]=ENGINE.rev(c.asc+(i-1)*30);
+  return c;
+}
+function crossAspects(inner,outer,keysIn,keysOut,orbs){
+  const out=[];
+  for(const ki of keysIn)for(const ko of keysOut){const x=aspect(inner[ki],outer[ko],orbs);if(x.type!=='none')out.push({ki,ko,asp:x})}
+  return out.sort((p,q)=>p.asp.orb-q.asp.orb);
+}
 const ELAFF={'fire-fire':.9,'earth-earth':.9,'air-air':.9,'water-water':.9,'fire-air':.8,'earth-water':.8,'fire-earth':.45,'air-water':.45,'fire-water':.35,'earth-air':.35};
 const elKey=(a,b)=>ELAFF[`${a}-${b}`]!==undefined?`${a}-${b}`:`${b}-${a}`;
 function modAff(a,b){if(a!==b)return .65;return {cardinal:.5,fixed:.4,mutable:.7}[a]}
@@ -502,7 +528,7 @@ const store={get(k,d){try{const v=localStorage.getItem(LS+k);return v?JSON.parse
 let lang=store.get('lang',(navigator.language||'').startsWith('cs')?'cs':'en');
 let people=store.get('people',null);if(!Array.isArray(people))people=SAMPLES.map(p=>({...p}));
 for(const p of people){if(p.city&&!p.place){p.place=p.city;p.cc='';p.admin='';delete p.city}}
-let tab=store.get('tab','people'),sel=store.get('sel',null),pairSel=store.get('pair',[null,null]),hsys=store.get('hsys','placidus'),editing=null,formErr='',picked=null,manual=false;
+let tab=store.get('tab','people'),sel=store.get('sel',null),pairSel=store.get('pair',[null,null]),hsys=store.get('hsys','placidus'),editing=null,formErr='',picked=null,manual=false,compatView=0,synSwap=false,todayDate=new Date().toISOString().slice(0,10);
 const t=k=>T[lang][k]??k;
 const tp=k=>T[lang].tip[k]??'';
 const da=s=>s?` data-tip="${esc(s)}"`:'';
@@ -525,7 +551,7 @@ function render(){
   document.documentElement.lang=lang;
   document.getElementById('disclaimer').textContent=(ENGINE.precise?t('engineOk'):t('engineFb'))+' '+t('disclaimer');
   const m=document.getElementById('main');m.replaceChildren();
-  ({people:renderPeople,chart:renderChart,traits:renderTraits,compat:renderCompat,matrix:renderMatrix,guide:renderGuide})[tab](m);
+  ({people:renderPeople,chart:renderChart,traits:renderTraits,compat:renderCompat,matrix:renderMatrix,today:renderToday,guide:renderGuide})[tab](m);
   persist();
 }
 function personChips(current,onPick){
@@ -637,6 +663,51 @@ function wheelSVG(c){
   for(const p of pls){const [x,y]=pt(p.draw,rP+10),[tx,ty]=pt(p.L,rH),[ux,uy]=pt(p.draw,rP+24);const sg=signOf(p.L),hn=houseOf(p.L,c.cusps),rx=c.retro[p.k]?' ℞':'';s+=`<line x1="${tx}" y1="${ty}" x2="${ux}" y2="${uy}" stroke="var(--muted)" stroke-width="1"/><circle cx="${ux}" cy="${uy}" r="2" fill="var(--muted)"/><text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" font-size="${p.pt?15:19}" fill="${p.pt?'var(--muted)':'var(--fg)'}"${da(`${t(p.k)}${rx} ${fmtDeg(p.L)} ${sname(sg)}, ${hn}. ${t('house').toLowerCase()}\n${T[lang].mean[p.k]}\n${t('house')} ${hn}: ${T[lang].houses[hn-1]}`)}>${p.g}</text>`;const [dx,dy]=pt(p.draw,rP-10);s+=`<text x="${dx}" y="${dy}" text-anchor="middle" dominant-baseline="central" font-size="9" fill="var(--muted)" font-family="var(--font-body)">${Math.floor(degIn(p.L))}°${rx}</text>`}
   return s+'</svg>';
 }
+/* Bi-wheel: inner chart with houses, outer ring of other positions, cross-aspect lines. outer = {positions, keys, glyphs, prefix} */
+function biWheelSVG(c,outer,cross,label){
+  const S=520,cx=S/2,cy=S/2,rO=250,rS=215,rOut=196,rH=172,rP=138,rIn=100;
+  const ang=L=>(180+(L-c.asc))*Math.PI/180;
+  const pt=(L,r)=>[cx+r*Math.cos(ang(L)),cy-r*Math.sin(ang(L))];
+  const arc=(L0,L1,r0,r1)=>{const [x0,y0]=pt(L0,r1),[x1,y1]=pt(L1,r1),[x2,y2]=pt(L1,r0),[x3,y3]=pt(L0,r0);return `M${x0},${y0}A${r1},${r1} 0 0 0 ${x1},${y1}L${x2},${y2}A${r0},${r0} 0 0 1 ${x3},${y3}Z`};
+  const spread=arr=>{for(let pass=0;pass<4;pass++)for(let i=0;i<arr.length;i++){const a=arr[i],b=arr[(i+1)%arr.length];const d=ENGINE.rev(b.draw-a.draw);if(d<9){const push=(9-d)/2;a.draw=ENGINE.rev(a.draw-push);b.draw=ENGINE.rev(b.draw+push)}}};
+  let s=`<svg class="wheel" viewBox="0 0 ${S} ${S}" role="img" aria-label="${esc(label)}"><rect width="${S}" height="${S}" fill="var(--surface)" rx="12"/>`;
+  for(const r of [rO,rS,rH,rIn])s+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--line)"/>`;
+  SIGNS.forEach((sg,i)=>{const L0=i*30;s+=`<path d="${arc(L0,L0+30,rS,rO)}" fill="var(--${sg.el})" fill-opacity="0.14" stroke="var(--line)"${da(signTip(sg))}/>`;const [x,y]=pt(L0+15,(rO+rS)/2);s+=`<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" font-size="18" fill="var(--${sg.el})" pointer-events="none">${sg.g}</text>`});
+  for(let h=1;h<=12;h++){const L=c.cusps[h],Ln=c.cusps[h%12+1];const [x0,y0]=pt(L,rIn),[x1,y1]=pt(L,rH);const major=(h-1)%3===0;s+=`<line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}" stroke="${major?'var(--fg)':'var(--line)'}" stroke-width="${major?1.5:1}"/>`;const [tx,ty]=pt(L+ENGINE.rev(Ln-L)/2,rIn+12);s+=`<text x="${tx}" y="${ty}" text-anchor="middle" dominant-baseline="central" font-size="10" fill="var(--muted)" font-family="var(--font-body)">${h}</text>`}
+  const [ax,ay]=pt(c.asc,rO+12);s+=`<text x="${ax-4}" y="${ay}" text-anchor="end" dominant-baseline="central" font-size="11" font-weight="700" fill="var(--fg)" font-family="var(--font-body)">AC</text>`;
+  const inner=BODIES.slice(0,10).map(([k,g])=>({k,g,L:ENGINE.rev(c[k]),draw:ENGINE.rev(c[k])})).sort((a,b)=>a.L-b.L);spread(inner);
+  const outs=outer.keys.map(k=>({k,g:outer.glyphs[k],L:ENGINE.rev(outer.positions[k]),draw:ENGINE.rev(outer.positions[k])})).sort((a,b)=>a.L-b.L);spread(outs);
+  for(const x of cross){const [x0,y0]=pt(c[x.ki],rIn),[x1,y1]=pt(outer.positions[x.ko],rIn);const hard=x.asp.type==='square'||x.asp.type==='opposition',conj=x.asp.type==='conjunction';s+=`<line class="asp" data-asp="${x.ki}-${x.ko}" x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}" stroke="${conj?'var(--accent)':hard?'var(--fire)':'var(--earth)'}" stroke-opacity="${x.asp.type==='sextile'?.45:.7}" stroke-width="1"/>`}
+  for(const p of inner){const [x,y]=pt(p.draw,rP),[tx,ty]=pt(p.L,rH),[ux,uy]=pt(p.draw,rP+14);const sg=signOf(p.L);s+=`<line x1="${tx}" y1="${ty}" x2="${ux}" y2="${uy}" stroke="var(--muted)" stroke-width="1"/><text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" font-size="17" fill="var(--fg)"${da(`${t(p.k)} ${fmtDeg(p.L)} ${sname(sg)}`)}>${p.g}</text>`}
+  for(const p of outs){const [x,y]=pt(p.draw,rOut),[tx,ty]=pt(p.L,rS),[ux,uy]=pt(p.draw,rOut+10);const sg=signOf(p.L);s+=`<line x1="${tx}" y1="${ty}" x2="${ux}" y2="${uy}" stroke="var(--accent)" stroke-width="1"/><text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" font-size="16" fill="var(--accent)"${da(`${outer.prefix} ${t(p.k)} ${fmtDeg(p.L)} ${sname(sg)}`)}>${p.g}</text>`}
+  return s+'</svg>';
+}
+function placementsTable(c,keys){
+  let rows='';
+  for(const [k,g] of keys){const L=c[k],s=signOf(L),hn=houseOf(L,c.cusps);const bodyTip={asc:tp('ac'),dc:tp('dc'),mc:tp('mc'),ic:tp('ic'),node:tp('node'),snode:tp('snode'),lilith:tp('lilith'),pof:tp('pof')}[k]||`${t(k)}: ${T[lang].mean[k]}`;const rx=c.retro&&c.retro[k]?` <span class="term"${da(tp('retro'))}>℞</span>`:'';rows+=`<tr><td class="g"${da(bodyTip)}>${g}</td><td${da(bodyTip)}>${t(k)}${rx}</td><td class="sg"${da(signTip(s))}><span class="sw bg-${s.el}"></span>${s.g} ${sname(s)}</td><td class="num"${da(tp('degree'))}>${fmtDeg(L)}</td><td class="num"${da(hn+'. '+t('house').toLowerCase()+': '+T[lang].houses[hn-1])}>${hn}</td><td class="mean"${da(bodyTip)}>${T[lang].mean[k]}</td></tr>`}
+  return el(`<div class="card" style="padding:8px 4px;overflow-x:auto"><table class="pl"><thead><tr><th></th><th>${t('planet')}</th><th${da(tp('signCell'))}>${t('sign')}</th><th${da(tp('degree'))}>${t('degree')}</th><th${da(tp('houseHdr'))}>${t('house')}</th><th${da(tp('meanHdr'))}>${t('meaning')}</th></tr></thead><tbody>${rows}</tbody></table></div>`);
+}
+const aspCls=a=>a==='conjunction'?'conj':(a==='square'||a==='opposition')?'hard':'soft';
+function aspectRow(key,leftLabel,rightLabel,asp,tipText){
+  return `<div class="a ${aspCls(asp.type)}" data-asp="${key}"${da(tipText)}><span class="sym">${ASPSYM[asp.type]}</span><span>${leftLabel} – ${rightLabel}</span><span class="muted small num" style="margin-left:auto">${t(asp.type)} ${asp.orb.toFixed(1)}°</span></div>`;
+}
+function aspectsCard(c,title){
+  const list=[];const P=BODIES.slice(0,10);
+  for(let i=0;i<P.length;i++)for(let j=i+1;j<P.length;j++){const a=aspect(c[P[i][0]],c[P[j][0]]);if(a.type!=='none')list.push({a:P[i],b:P[j],asp:a})}
+  list.sort((x,y)=>x.asp.orb-y.asp.orb);
+  return el(`<div class="card" style="margin-top:18px"><h3 style="margin-bottom:10px">${title}</h3>${list.length?`<div class="asp-list">${list.map(x=>aspectRow(`${x.a[0]}-${x.b[0]}`,`${x.a[1]} ${t(x.a[0])}`,`${x.b[1]} ${t(x.b[0])}`,x.asp,tp('asp')[x.asp.type]+'\n'+t(x.a[0])+': '+T[lang].mean[x.a[0]]+'\n'+t(x.b[0])+': '+T[lang].mean[x.b[0]]+'\n'+tp('orb'))).join('')}</div>`:`<p class="muted">${t('noAspects')}</p>`}</div>`);
+}
+function wireAspectHover(m){
+  const svg=m.querySelector('svg.wheel'),lines=[...m.querySelectorAll('svg.wheel line.asp')],aspRows=[...m.querySelectorAll('.asp-list .a')];
+  if(!svg)return;let pinnedAsp=null;
+  const setHl=key=>{svg.classList.toggle('hl',!!key);for(const n of [...lines,...aspRows])n.classList.toggle('hl',!!key&&n.dataset.asp===key)};
+  for(const n of [...lines,...aspRows]){
+    n.addEventListener('mouseenter',()=>setHl(n.dataset.asp));
+    n.addEventListener('mouseleave',()=>setHl(pinnedAsp));
+    n.addEventListener('click',()=>{pinnedAsp=pinnedAsp===n.dataset.asp?null:n.dataset.asp;setHl(pinnedAsp)});
+  }
+}
+const legendHTML=()=>`<div class="asp-legend"><span class="soft"><i></i>${t('legendSoft')}</span><span class="hard"><i></i>${t('legendHard')}</span></div><p class="small muted" style="text-align:center;margin-bottom:4px">${t('legendHint')}</p>`;
 function highlightsCard(c){
   const L=T[lang],planets=BODIES.slice(0,10);
   const fill=(s,o)=>s.replace(/\{(\w+)\}/g,(_,k)=>o[k]??'');
@@ -671,26 +742,12 @@ function renderChart(m){
   head.querySelector('#hsys').onchange=ev=>{hsys=ev.target.value;for(const x of people)delete x.chart;render()};
   m.append(head);
   const wrap=el('<div class="chart-wrap"></div>');
-  wrap.append(el(`<div class="card" style="padding:8px">${wheelSVG(c)}<div class="asp-legend"><span class="soft"><i></i>${t('legendSoft')}</span><span class="hard"><i></i>${t('legendHard')}</span></div><p class="small muted" style="text-align:center;margin-bottom:4px">${t('legendHint')}</p></div>`));
-  let rows='';
-  for(const [k,g] of [...BODIES.slice(0,10),...POINTS,...BODIES.slice(10)]){const L=c[k],s=signOf(L),hn=houseOf(L,c.cusps);const bodyTip={asc:tp('ac'),dc:tp('dc'),mc:tp('mc'),ic:tp('ic'),node:tp('node'),snode:tp('snode'),lilith:tp('lilith'),pof:tp('pof')}[k]||`${t(k)}: ${T[lang].mean[k]}`;const rx=c.retro[k]?` <span class="term"${da(tp('retro'))}>℞</span>`:'';rows+=`<tr><td class="g"${da(bodyTip)}>${g}</td><td${da(bodyTip)}>${t(k)}${rx}</td><td class="sg"${da(signTip(s))}><span class="sw bg-${s.el}"></span>${s.g} ${sname(s)}</td><td class="num"${da(tp('degree'))}>${fmtDeg(L)}</td><td class="num"${da(hn+'. '+t('house').toLowerCase()+': '+T[lang].houses[hn-1])}>${hn}</td><td class="mean"${da(bodyTip)}>${T[lang].mean[k]}</td></tr>`}
-  wrap.append(el(`<div class="card" style="padding:8px 4px;overflow-x:auto"><table class="pl"><thead><tr><th></th><th>${t('planet')}</th><th${da(tp('signCell'))}>${t('sign')}</th><th${da(tp('degree'))}>${t('degree')}</th><th${da(tp('houseHdr'))}>${t('house')}</th><th${da(tp('meanHdr'))}>${t('meaning')}</th></tr></thead><tbody>${rows}</tbody></table></div>`));
+  wrap.append(el(`<div class="card" style="padding:8px">${wheelSVG(c)}${legendHTML()}</div>`));
+  wrap.append(placementsTable(c,[...BODIES.slice(0,10),...POINTS,...BODIES.slice(10)]));
   m.append(wrap);
   m.append(highlightsCard(c));
-  const list=[];const P=BODIES.slice(0,10);
-  for(let i=0;i<P.length;i++)for(let j=i+1;j<P.length;j++){const a=aspect(c[P[i][0]],c[P[j][0]]);if(a.type!=='none')list.push({a:P[i],b:P[j],asp:a})}
-  list.sort((x,y)=>x.asp.orb-y.asp.orb);
-  const cls=a=>a==='conjunction'?'conj':(a==='square'||a==='opposition')?'hard':'soft';
-  m.append(el(`<div class="card" style="margin-top:18px"><h3 style="margin-bottom:10px">${t('aspects')}</h3>${list.length?`<div class="asp-list">${list.map(x=>`<div class="a ${cls(x.asp.type)}" data-asp="${x.a[0]}-${x.b[0]}"${da(tp('asp')[x.asp.type]+'\n'+t(x.a[0])+': '+T[lang].mean[x.a[0]]+'\n'+t(x.b[0])+': '+T[lang].mean[x.b[0]]+'\n'+tp('orb'))}><span class="sym">${ASPSYM[x.asp.type]}</span><span>${x.a[1]} ${t(x.a[0])} – ${x.b[1]} ${t(x.b[0])}</span><span class="muted small num" style="margin-left:auto">${t(x.asp.type)} ${x.asp.orb.toFixed(1)}°</span></div>`).join('')}</div>`:`<p class="muted">${t('noAspects')}</p>`}</div>`));
-  // hover (or tap) pairing between aspect lines on the wheel and rows in the list
-  const svg=m.querySelector('svg.wheel'),lines=[...m.querySelectorAll('svg.wheel line.asp')],aspRows=[...m.querySelectorAll('.asp-list .a')];
-  let pinnedAsp=null;
-  const setHl=key=>{svg.classList.toggle('hl',!!key);for(const n of [...lines,...aspRows])n.classList.toggle('hl',!!key&&n.dataset.asp===key)};
-  for(const n of [...lines,...aspRows]){
-    n.addEventListener('mouseenter',()=>setHl(n.dataset.asp));
-    n.addEventListener('mouseleave',()=>setHl(pinnedAsp));
-    n.addEventListener('click',()=>{pinnedAsp=pinnedAsp===n.dataset.asp?null:n.dataset.asp;setHl(pinnedAsp)});
-  }
+  m.append(aspectsCard(c,t('aspects')));
+  wireAspectHover(m);
 }
 
 /* --- Traits --- */
@@ -725,6 +782,33 @@ function renderCompat(m){
   if(a===b){m.append(el(`<p class="muted">${t('sameTwo')}</p>`));return}
   const A=people.find(p=>p.id===a),B=people.find(p=>p.id===b),r=compat(A,B);
   const sa=signOf(A.chart.sun),sb=signOf(B.chart.sun);
+  const views=el(`<div class="chips" role="tablist">${T[lang].synView.map((v,i)=>`<button class="chip" role="tab" aria-pressed="${compatView===i}">${v}</button>`).join('')}</div>`);
+  views.querySelectorAll('button').forEach((b,i)=>b.onclick=()=>{compatView=i;render()});
+  m.append(views);
+  const fill=(s,o)=>s.replace(/\{(\w+)\}/g,(_,k)=>o[k]??'');
+  if(compatView===1){ // synastry bi-wheel
+    const [In,Out]=synSwap?[B,A]:[A,B];
+    const cross=crossAspects(In.chart,Out.chart,SYN_KEYS,SYN_KEYS);
+    const glyphs=Object.fromEntries(BODIES.map(([k,g])=>[k,g]));
+    const head=el(`<div class="row" style="justify-content:space-between;margin-bottom:12px"><div><h2>${fill(T[lang].synTitle,{A:esc(In.name),B:esc(Out.name)})}</h2><p class="muted small" style="max-width:68ch">${fill(T[lang].synNote,{A:esc(In.name),B:esc(Out.name)})}</p></div><button class="btn" id="swap">${t('swap')}</button></div>`);
+    head.querySelector('#swap').onclick=()=>{synSwap=!synSwap;render()};
+    m.append(head);
+    m.append(el(`<div class="card" style="padding:8px;max-width:560px;margin:0 auto">${biWheelSVG(In.chart,{positions:Out.chart,keys:BODIES.slice(0,10).map(x=>x[0]),glyphs,prefix:esc(Out.name)+':'},cross,'Synastry')}${legendHTML()}</div>`));
+    m.append(el(`<div class="card" style="margin-top:18px"><h3 style="margin-bottom:10px">${t('crossAspects')}</h3>${cross.length?`<div class="asp-list">${cross.map(x=>aspectRow(`${x.ki}-${x.ko}`,`${esc(In.name)}: ${glyphs[x.ki]} ${t(x.ki)}`,`${esc(Out.name)}: ${glyphs[x.ko]} ${t(x.ko)}`,x.asp,tp('asp')[x.asp.type]+'\n'+t(x.ki)+': '+T[lang].mean[x.ki]+'\n'+t(x.ko)+': '+T[lang].mean[x.ko]+'\n'+tp('orb'))).join('')}</div>`:`<p class="muted">${t('noAspects')}</p>`}</div>`));
+    wireAspectHover(m);return;
+  }
+  if(compatView===2){ // composite
+    const c=compositeChart(A,B),cs=signOf(c.sun),cm=signOf(c.moon),ca=signOf(c.asc);
+    m.append(el(`<div style="margin-bottom:12px"><h2>${fill(T[lang].compTitle,{A:esc(A.name),B:esc(B.name)})}</h2><p class="muted small" style="max-width:68ch">${T[lang].compNote}</p></div>`));
+    const wrap=el('<div class="chart-wrap"></div>');
+    wrap.append(el(`<div class="card" style="padding:8px">${wheelSVG(c)}${legendHTML()}</div>`));
+    wrap.append(placementsTable(c,[...BODIES.slice(0,10),['asc','AC'],['mc','MC']]));
+    m.append(wrap);
+    const line=(lbl,s,txt)=>`<div class="card trait"><div class="g el-${s.el}"${da(signTip(s))}>${s.g}</div><div><h3>${fill(lbl,{sloc:sloc(s)})}</h3><div class="kw">${s[lang].kw.map(w=>`<span class="pill">${w}</span>`).join('')}</div><p style="margin-top:6px">${txt}</p></div></div>`;
+    m.append(el(`<div class="stack" style="margin-top:18px">${line(T[lang].compSun,cs,cs[lang].sun)}${line(T[lang].compMoon,cm,cm[lang].moon)}${line(T[lang].compAsc,ca,ca[lang].asc)}</div>`));
+    m.append(aspectsCard(c,t('aspects')));
+    wireAspectHover(m);return;
+  }
   m.append(el(`<div class="card score" style="margin-bottom:18px"><div${da(tp('ring'))}>${ringSVG(r.score)}</div><div><p class="small muted" style="text-transform:uppercase;letter-spacing:.06em;font-weight:700"${da(tp('ring'))}>${t('score')}</p><h2>${esc(A.name)} × ${esc(B.name)}</h2><p class="verdict" style="margin:4px 0 8px"${da(tp('verdict'))}>${verdict(r.score)}</p><p class="small"><span class="pill"${da(t('sun')+' '+esc(A.name)+'\n'+signTip(sa))}><span class="g el-${sa.el}">${sa.g}</span>${sname(sa)}</span> <span class="pill"${da(t('sun')+' '+esc(B.name)+'\n'+signTip(sb))}><span class="g el-${sb.el}">${sb.g}</span>${sname(sb)}</span></p><p style="margin-top:8px"${da(tp('el')[sa.el]+'\n'+tp('el')[sb.el])}>${T[lang].elpairs[r.elKey]}</p></div></div>`));
   const sorted=[...r.factors].sort((x,y)=>y.w*(y.s-.5)-x.w*(x.s-.5));
   const fx=el(`<div class="card"><div class="row" style="justify-content:space-between;margin-bottom:10px"><h3>${t('breakdown')}</h3><button class="linkbtn" id="how">${t('howScored')}</button></div><div class="factors"></div></div>`);
@@ -734,6 +818,36 @@ function renderCompat(m){
     const asp=f.asp.type==='none'?t('none'):`${ASPSYM[f.asp.type]} ${t(f.asp.type)} (${t('orb')} ${f.asp.orb.toFixed(1)}°)`;
     fx.querySelector('.factors').append(el(`<div class="factor ${pos?'pos':'neg'}"><span class="t">${sub(P[0])} <span class="muted" style="font-weight:500">· ${P[1]}</span></span><span class="s"${da(tp('factor')+'\n'+(lang==='cs'?'Váha':'Weight')+' '+f.w+', '+(lang==='cs'?'hodnota':'value')+' '+f.s.toFixed(2))}>${pts>0?'+':''}${pts}</span><span class="d">${sub(pos?P[2]:P[3])} <span class="muted term"${da(tp('asp')[f.asp.type]+(f.asp.orb!==null?'\n'+tp('orb'):''))}>— ${asp}</span></span></div>`))}
   m.append(fx);
+}
+
+/* --- Today (transits) --- */
+function renderToday(m){
+  if(!people.length){m.append(el(`<div class="card empty">${t('empty')}</div>`));return}
+  m.append(personChips(sel,id=>{sel=id;render()}));
+  const p=people.find(x=>x.id===sel),c=p.chart;
+  const [y,mo,d]=todayDate.split('-').map(Number);
+  const utc=Date.UTC(y,mo-1,d,12,0);                    // noon UTC of the chosen day
+  const now=ENGINE.positions(utc);
+  const fill=(s,o)=>s.replace(/\{(\w+)\}/g,(_,k)=>o[k]??'');
+  const dateLabel=new Date(utc).toLocaleDateString(lang==='cs'?'cs-CZ':'en-GB',{day:'numeric',month:'long',year:'numeric'});
+  const head=el(`<div class="row" style="justify-content:space-between;margin-bottom:12px"><div><h2>${fill(T[lang].transitTitle,{date:dateLabel,name:esc(p.name)})}</h2><p class="muted small" style="max-width:68ch">${T[lang].transitNote}</p></div><label class="f">${t('transitDate')}<input id="tdate" type="date" value="${todayDate}" min="1900-01-01" max="2100-12-31"></label></div>`);
+  head.querySelector('#tdate').onchange=ev=>{if(ev.target.value){todayDate=ev.target.value;render()}};
+  m.append(head);
+  const tkeys=BODIES.slice(0,10).map(x=>x[0]),nkeys=[...tkeys,'asc','mc'];
+  const cross=crossAspects(c,now,nkeys,tkeys,TRANSIT_ORBS).map(x=>({ki:x.ki,ko:x.ko,asp:x.asp}));
+  const glyphs=Object.fromEntries(BODIES.map(([k,g])=>[k,g]));
+  m.append(el(`<div class="card" style="padding:8px;max-width:560px;margin:0 auto">${biWheelSVG(c,{positions:now,keys:tkeys,glyphs,prefix:dateLabel+':'},cross,'Transits')}${legendHTML()}</div>`));
+  const ms=signOf(now.moon);
+  m.append(el(`<p class="small" style="margin:12px 0 0"><span class="pill"${da(signTip(ms))}><span class="g el-${ms.el}">${ms.g}</span>${fill(T[lang].moonToday,{sloc:sloc(ms),kw:ms[lang].kw.join(', ')})}</span></p>`));
+  const slow=k=>['jupiter','saturn','uranus','neptune','pluto'].includes(k);
+  const sorted=[...cross].sort((a,b)=>(slow(b.ko)-slow(a.ko))||(a.asp.orb-b.asp.orb));
+  const rows=sorted.map(x=>{const key=`${x.ki}-${x.ko}`;const reading=`${T[lang].tMean[x.ko]} × ${T[lang].mean[x.ki]}. ${T[lang].tone[x.asp.type]}`;
+    return `<div class="factor ${aspCls(x.asp.type)==='hard'?'neg':'pos'}" data-asp="${key}"><span class="t">${glyphs[x.ko]} ${t(x.ko)} <span class="muted" style="font-weight:500">(${T[lang].todayLbl})</span> ${ASPSYM[x.asp.type]} ${glyphs[x.ki]} ${t(x.ki)} <span class="muted" style="font-weight:500">(${T[lang].natalLbl}) · ${t(x.asp.type)}, ${t('orb')} ${x.asp.orb.toFixed(1)}°</span></span><span class="s small muted" style="color:var(--muted)">${slow(x.ko)?T[lang].slow:T[lang].fast}</span><span class="d">${reading}</span></div>`}).join('');
+  const card=el(`<div class="card" style="margin-top:18px"><h3 style="margin-bottom:10px">${t('crossAspects')}</h3>${rows?`<div class="factors asp-list" style="display:flex">${rows}</div>`:`<p class="muted">${T[lang].noTransits}</p>`}</div>`);
+  m.append(card);
+  // reuse the hover pairing: rows carry data-asp like the list rows
+  card.querySelectorAll('.factor').forEach(f=>f.classList.add('a'));
+  wireAspectHover(m);
 }
 
 /* --- Matrix --- */
@@ -788,6 +902,6 @@ function renderGuide(m){
 document.getElementById('lang-cs').onclick=()=>{lang='cs';render()};
 document.getElementById('lang-en').onclick=()=>{lang='en';render()};
 document.querySelectorAll('nav.tabs button').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;editing=null;render()});
-if(location.hash){const h=location.hash.slice(1);if(['people','chart','traits','compat','matrix','guide'].includes(h))tab=h}
+if(location.hash){const h=location.hash.slice(1);if(['people','chart','traits','compat','matrix','today','guide'].includes(h))tab=h}
 render();
 </script>
