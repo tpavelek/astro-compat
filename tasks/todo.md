@@ -15,6 +15,19 @@ Time zone: 1988-03-14 07:30 Prague → 06:30Z (CET), 1992-07-21 14:05 Prague →
 Rendered look (Chromium 1200px, chart tab): no console errors from the app; zodiac glyphs rendered as emoji → fixed by appending U+FE0E to every sign and planet glyph (v2).
 Not verified: phone-width layout and dark theme were designed but not screenshotted; compatibility scoring is a stereotype heuristic with no external oracle.
 
+## v3 (2026-10-27, later) — explanations, real towns, precise engine
+
+- [x] Guide tab (CS/EN): natal chart basics, Big 3, planets, elements/modalities, houses, aspects, how the score is built, accuracy limits; "Stands for" column + house tooltips in the placements table; aspect list under the wheel; house themes on Traits
+- [x] Gazetteer: `scripts/build_places.py` → `deliverables/places.json` (17,286 towns from GeoNames cities500: CZ/SK all ≥500, DE/AT/PL/HU ≥15k, world ≥50k, 284 zones, Czech aliases for 60 cities); type-ahead search with diacritics-insensitive matching; manual coordinates as explicit fallback (fixes the v2 dead end where a new person showed "Vlastní místo…" with the coordinate fields hidden)
+- [x] Engine: astronomy-engine 2.1.19 from jsdelivr (fallback to the v1 formulas if blocked, footer says which); Placidus houses (equal above ±66° or by user choice)
+- [x] Published v3: https://claude.ai/artifact/21W24LXPhH9q78sB7QJ3pd — files listing shows index.html 94 kB + places.json 1.09 MB
+
+Review (v3):
+- astronomy-engine vs independent Meeus Moon at J2000: 223.324° vs 223.32°; Sun 280.369° (ref 280.37°).
+- Placidus: equator case collapses to equal-RA division (expected); Prague J2000 cusps strictly ordered 10→11→12→1→2→3; Eva's Ascendant 0°17′ Taurus unchanged vs v2 (0°18′).
+- Browser run (Chromium 1440px): no app console errors; library loaded (footer "Engine: astronomy-engine 2.1.19"); unequal Placidus houses drawn; "kapl" → Kaplice, South Bohemian (CZ) 48.74/14.49 Europe/Prague, picked via Enter.
+- Not verified: phone width, dark theme, CS guide rendering (same code path as EN), fallback-engine branch in the browser (only tested in node).
+
 Verification:
 - Type: executable
 - Check: run the engine on a known date in node — 2000-01-01 12:00 UTC Sun ≈ 280.5° (10° Capricorn), Moon ≈ 218° (Scorpio), + Ascendant for Prague 2000-01-01 12:00 UTC ≈ ~Taurus/Gemini sanity; artifact preview for overflow/console errors

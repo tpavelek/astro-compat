@@ -38,14 +38,19 @@ and continue with remaining files. Never block on a single failure.
 
 | Path | Description |
 |------|-------------|
-| `deliverables/astro-compat.html` | The app (single self-contained file) |
+| `deliverables/astro-compat.html` | The app (one HTML file; loads astronomy-engine from jsdelivr and `places.json` next to it) |
+| `deliverables/places.json` | Gazetteer, 17k towns, generated — do not hand-edit |
+| `scripts/build_places.py` | Rebuilds places.json from GeoNames cities500.txt + admin1CodesASCII.txt (downloads go in `temp/`) |
 | `knowledge/README.md` | Knowledge navigation map |
+
+Live: https://claude.ai/artifact/21W24LXPhH9q78sB7QJ3pd (publish `astro-compat.html` with `files: {"places.json": ...}`).
 
 ## Active Decisions
 
-- Single self-contained HTML/JS file, published as a claude.ai artifact; people stored per browser (localStorage) with sample people preloaded.
-- Planet positions from simplified Meeus/VSOP-lite formulas in JS (sign-level accuracy is enough); Ascendant from local sidereal time + latitude; houses = equal houses from the Ascendant.
-- Compatibility = weighted blend of element/modality affinity and Sun/Moon/Venus/Mars cross-aspects, scaled 0–100 with stereotype commentary.
+- One HTML file + places.json, published as a claude.ai artifact; people stored per browser (localStorage) with sample people preloaded.
+- Positions: astronomy-engine 2.1.19 (CDN) with the original Schlyter formulas as fallback; houses Placidus, equal above ±66° or by user choice. Tropical zodiac.
+- Towns: GeoNames gazetteer embedded (CZ/SK ≥500, DE/AT/PL/HU ≥15k, world ≥50k) because artifacts cannot call geocoding APIs or load map tiles; manual coordinates remain as fallback.
+- Compatibility = weighted blend of element/modality affinity and Sun/Moon/Venus/Mars cross-aspects, scaled 0–99 with stereotype commentary; the weights are documented in the in-app Guide.
 
 ## Domain Learnings
 
