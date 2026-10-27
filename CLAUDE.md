@@ -43,7 +43,9 @@ and continue with remaining files. Never block on a single failure.
 | `scripts/build_places.py` | Rebuilds places.json from GeoNames cities500.txt + admin1CodesASCII.txt (downloads go in `temp/`) |
 | `knowledge/README.md` | Knowledge navigation map |
 
-Live: https://claude.ai/artifact/21W24LXPhH9q78sB7QJ3pd (publish `astro-compat.html` with `files: {"places.json": ...}`).
+Live:
+- GitHub Pages (public): https://tpavelek.github.io/astro-compat/ — deployed by `.github/workflows/pages.yml` on every push to `main` that touches `deliverables/`; the workflow wraps `astro-compat.html` in an `<html>` skeleton and copies `places.json`. Repo: https://github.com/tpavelek/astro-compat (personal account `tpavelek`; push with `gh auth token -u tpavelek` as the git credential, the globally active `gh` account is the work one).
+- Claude artifact: https://claude.ai/artifact/21W24LXPhH9q78sB7QJ3pd (publish `astro-compat.html` with `files: {"places.json": ...}`).
 
 ## Active Decisions
 

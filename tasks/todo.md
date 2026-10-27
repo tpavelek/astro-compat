@@ -35,6 +35,18 @@ Review (v3):
 - [x] Footer: fallback clause removed from the disclaimer; the engine line explains the simplified model only when the library failed to load
 - [x] Published v4 (version id 1793131262-e592)
 
+## Publishing (2026-10-27, late) — GitHub Pages
+
+- [x] Public repo https://github.com/tpavelek/astro-compat (personal account), `main` pushed
+- [x] `.github/workflows/pages.yml`: wraps deliverables/astro-compat.html into _site/index.html, copies places.json, deploys via actions/deploy-pages. Pages site had to be created with the user token (`POST /repos/.../pages build_type=workflow`); the workflow's GITHUB_TOKEN cannot create it (`Resource not accessible by integration`).
+- [x] Live: https://tpavelek.github.io/astro-compat/
+
+Verification:
+- Type: executable
+- Check: `curl` of the live index and places.json after the deploy run succeeded; `<title>` read back from the served HTML
+- Pass condition: both 200, places.json 1,088,542 B (same size as the local file), title "Astro Compat"
+- Evidence: run 40592258490 succeeded; read-back printed `200 135416B`, `places.json 200 1088542B`, `<title>Astro Compat</title>`
+
 ## v6 (2026-10-27, late) — synastry, composite, transits
 
 - [x] Aspect legend under the wheel + hover/tap pairing of lines and rows (v5.1)
