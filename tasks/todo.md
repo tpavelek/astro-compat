@@ -35,6 +35,16 @@ Review (v3):
 - [x] Footer: fallback clause removed from the disclaimer; the engine line explains the simplified model only when the library failed to load
 - [x] Published v4 (version id 1793131262-e592)
 
+## v5 (2026-10-27, night) — angles, points, highlights
+
+- [x] DC and IC angles (v4.3); "for entertainment only" sentence removed (v4.1); footer merged into one paragraph (v4.2); tooltips removed from buttons/inputs/chips/matrix cells, tap tooltips auto-hide after 4 s (v4.4)
+- [x] Points: mean North/South Node (Meeus 47.7), Black Moon Lilith (mean apogee), Part of Fortune (day/night formula); retrograde flags ℞ from a 1-day longitude difference; all in the table, on the wheel (except South Node) and in tooltips
+- [x] "Chart highlights" card: chart ruler, Moon phase at birth (8 phases), retrograde planets, stelliums (≥3 planets per sign/house), hemisphere emphasis (above/below horizon, rising/setting half)
+- [x] Guide: new section "Other points and highlights" (CS/EN); planets table lists the four points
+- [x] Published v5 (version id 1793132964-0836)
+
+Review (v5): node sanity — J2000 mean node 125.04° and Lilith 263.35° match Meeus; retrograde flags: Saturn ℞ on 2000-01-01 and Pluto ℞ on 1988-03-14 are both historically correct. Chromium 1200px, CS chart tab: 18-row table incl. nodes/Lilith/PoF/AC/DC/MC/IC, Pluto ℞ marked, highlights card (ruler Venus in Taurus house 1, Last Quarter 307°). No app console errors. Not verified: stellium branch (none of the 4 samples has one), phone width for the new card.
+
 Review (v4): Chromium 430px, CS: "Horoskop / Upravit / Smazat" on one row; hovering Eva's Sun pill shows the 5-line tooltip (planet meaning, sign keywords, element, modality, ruler); console clean apart from favicon 404 of the local server. Not verified: touch pinning on a real phone, dark theme.
 
 Verification:
