@@ -207,7 +207,7 @@ button[data-tip],a[data-tip],select[data-tip],input[data-tip],.chip[data-tip],td
 
 <main id="main"></main>
 
-<footer><p data-i="disclaimer"></p><p class="engine" id="engine"><i></i><span></span></p></footer>
+<footer><p id="disclaimer"></p></footer>
 </div>
 <div class="tip" id="tip" hidden></div>
 
@@ -356,8 +356,8 @@ const T={
   v90:'Written in the stars',v75:'Strong match',v60:'Workable',v45:'Challenging',v0:'Cosmic mismatch',
   conjunction:'conjunction',sextile:'sextile',square:'square',trine:'trine',opposition:'opposition',none:'no aspect',orb:'orb',
   matrixTitle:'Everyone with everyone',matrixNote:'Tap a cell to open that pair in Compatibility.',low:'low',high:'high',
-  disclaimer:'Positions: astronomy-engine (VSOP87/ELP-based, about 1 arcminute). Houses: Placidus (equal houses above ±66° latitude). Time zones and daylight saving follow your browser\'s zone database. Towns: GeoNames (CC BY 4.0). People are stored only in this browser.',
-  engineOk:'Engine: astronomy-engine 2.1.19 · Placidus houses',engineFb:'Engine: the astronomy library could not be loaded, so a simplified model is used (accuracy about 1°). Reload with internet access for precise positions.',
+  disclaimer:'Houses: Placidus (equal houses above ±66° latitude). Time zones and daylight saving follow your browser\'s zone database. Towns: GeoNames (CC BY 4.0). People are stored only in this browser.',
+  engineOk:'Positions: astronomy-engine 2.1.19 (VSOP87/ELP-based, about 1 arcminute).',engineFb:'Positions: the astronomy library could not be loaded, so a simplified model is used (about 1°); reload with internet access for precise positions.',
   tip:{tab_people:'Add, edit and delete people; each card shows the big three',tab_chart:'Chart wheel, planet positions, houses and aspects for one person',tab_traits:'Stereotype personality reading from Sun, Moon, Ascendant, Venus and Mars',tab_compat:'Score and breakdown for any two people',tab_matrix:'Everyone with everyone at a glance',tab_guide:'What all of this means',langCs:'Čeština',langEn:'English',
    add:'Opens the form; needs name, birth date, time and place',restore:'Brings back deleted sample people',sample:'Example person with made-up data; delete freely',btnChart:'Open this person\'s chart',btnEdit:'Change the birth data',btnDel:'Remove from this browser (asks once)',chip:'Switch to this person',
    fName:'Any label; shown everywhere',fDate:'Day, month and year of birth',fTime:'Local clock time at the birth place. The Ascendant changes sign about every 2 hours, so minutes matter.',fUnk:'Without a time, noon is used: the Sun and most planets are fine, the Moon may be off by up to 7°, the Ascendant and houses are guesses.',fPlace:'Provides latitude, longitude and time zone. Type at least two letters; Czech names of foreign cities work too.',fManual:'For places not in the list: name, coordinates and time zone by hand',
@@ -403,8 +403,8 @@ const T={
   v90:'Psáno ve hvězdách',v75:'Silná shoda',v60:'Dá se',v45:'Náročné',v0:'Kosmický nesoulad',
   conjunction:'konjunkce',sextile:'sextil',square:'kvadratura',trine:'trigon',opposition:'opozice',none:'bez aspektu',orb:'orbis',
   matrixTitle:'Každý s každým',matrixNote:'Klepnutím na políčko otevřete dvojici v záložce Shoda.',low:'nízká',high:'vysoká',
-  disclaimer:'Pozice: knihovna astronomy-engine (na základě VSOP87/ELP, přesnost asi 1 úhlová minuta). Domy: Placidus (nad ±66° šířky rovné domy). Časová pásma a letní čas podle databáze pásem v prohlížeči. Obce: GeoNames (CC BY 4.0). Lidé jsou uloženi jen v tomto prohlížeči.',
-  engineOk:'Výpočet: astronomy-engine 2.1.19 · domy Placidus',engineFb:'Výpočet: astronomická knihovna se nenačetla, používá se zjednodušený model (přesnost asi 1°). Pro přesné pozice načtěte stránku znovu s připojením k internetu.',
+  disclaimer:'Domy: Placidus (nad ±66° šířky rovné domy). Časová pásma a letní čas podle databáze pásem v prohlížeči. Obce: GeoNames (CC BY 4.0). Lidé jsou uloženi jen v tomto prohlížeči.',
+  engineOk:'Pozice: astronomy-engine 2.1.19 (na základě VSOP87/ELP, přesnost asi 1 úhlová minuta).',engineFb:'Pozice: astronomická knihovna se nenačetla, používá se zjednodušený model (přesnost asi 1°); pro přesné pozice načtěte stránku znovu s připojením k internetu.',
   tip:{tab_people:'Přidávejte, upravujte a mažte lidi; karta ukazuje velkou trojku',tab_chart:'Kolo horoskopu, pozice planet, domy a aspekty jedné osoby',tab_traits:'Stereotypní čtení povahy ze Slunce, Měsíce, Ascendentu, Venuše a Marsu',tab_compat:'Skóre a rozbor pro libovolné dva lidi',tab_matrix:'Každý s každým na jeden pohled',tab_guide:'Co to všechno znamená',langCs:'Čeština',langEn:'English',
    add:'Otevře formulář; je potřeba jméno, datum, čas a místo narození',restore:'Vrátí smazané ukázkové osoby',sample:'Ukázková osoba se smyšlenými údaji; klidně smažte',btnChart:'Otevřít horoskop této osoby',btnEdit:'Změnit údaje o narození',btnDel:'Odstranit z tohoto prohlížeče (jednou se zeptá)',chip:'Přepnout na tuto osobu',
    fName:'Libovolné označení; zobrazuje se všude',fDate:'Den, měsíc a rok narození',fTime:'Místní čas v místě narození. Ascendent mění znamení asi každé 2 hodiny, takže na minutách záleží.',fUnk:'Bez času se použije poledne: Slunce a většina planet sedí, Měsíc může být až o 7° jinde, Ascendent a domy jsou odhad.',fPlace:'Dává zeměpisnou šířku, délku a časové pásmo. Napište aspoň dvě písmena; fungují i české názvy cizích měst.',fManual:'Pro místa, která v seznamu nejsou: název, souřadnice a pásmo ručně',
@@ -498,7 +498,7 @@ function render(){
   document.querySelectorAll('nav.tabs button').forEach(b=>{b.setAttribute('aria-selected',b.dataset.tab===tab);b.dataset.tip=tp(b.dataset.i)});
   document.getElementById('lang-cs').dataset.tip=tp('langCs');document.getElementById('lang-en').dataset.tip=tp('langEn');
   document.documentElement.lang=lang;
-  const eng=document.getElementById('engine');eng.className='engine'+(ENGINE.precise?'':' fb');eng.querySelector('span').textContent=ENGINE.precise?t('engineOk'):t('engineFb');
+  document.getElementById('disclaimer').textContent=(ENGINE.precise?t('engineOk'):t('engineFb'))+' '+t('disclaimer');
   const m=document.getElementById('main');m.replaceChildren();
   ({people:renderPeople,chart:renderChart,traits:renderTraits,compat:renderCompat,matrix:renderMatrix,guide:renderGuide})[tab](m);
   persist();
