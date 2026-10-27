@@ -28,6 +28,15 @@ Review (v3):
 - Browser run (Chromium 1440px): no app console errors; library loaded (footer "Engine: astronomy-engine 2.1.19"); unequal Placidus houses drawn; "kapl" → Kaplice, South Bohemian (CZ) 48.74/14.49 Europe/Prague, picked via Enter.
 - Not verified: phone width, dark theme, CS guide rendering (same code path as EN), fallback-engine branch in the browser (only tested in node).
 
+## v4 (2026-10-27, evening) — tooltips, compact card buttons, footer wording
+
+- [x] Custom tooltip layer (`data-tip`, hover + keyboard focus + tap-to-pin on touch) on tabs, language buttons, add/restore, sample label, Big-3 pills, card buttons, person chips, every form field, chart table headers and cells, wheel (sign arcs, planets, house numbers, AC/MC), aspect rows, trait headings/terms/balance bars, score ring, verdict, factor points and aspect, matrix headers/cells/legend. ~60 CS + EN tooltip strings in `T.<lang>.tip`.
+- [x] Card action buttons and pills smaller so CZ labels fit on one row at 430px
+- [x] Footer: fallback clause removed from the disclaimer; the engine line explains the simplified model only when the library failed to load
+- [x] Published v4 (version id 1793131262-e592)
+
+Review (v4): Chromium 430px, CS: "Horoskop / Upravit / Smazat" on one row; hovering Eva's Sun pill shows the 5-line tooltip (planet meaning, sign keywords, element, modality, ruler); console clean apart from favicon 404 of the local server. Not verified: touch pinning on a real phone, dark theme.
+
 Verification:
 - Type: executable
 - Check: run the engine on a known date in node — 2000-01-01 12:00 UTC Sun ≈ 280.5° (10° Capricorn), Moon ≈ 218° (Scorpio), + Ascendant for Prague 2000-01-01 12:00 UTC ≈ ~Taurus/Gemini sanity; artifact preview for overflow/console errors

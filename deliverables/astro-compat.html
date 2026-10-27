@@ -175,6 +175,14 @@ table.pl td[title]{cursor:help;text-decoration:underline dotted var(--line);text
 .engine.fb i{background:var(--air)}
 .hsel{display:inline-flex;gap:6px;align-items:center;font-size:.85rem;color:var(--muted);font-weight:700}
 .hsel select{font:inherit;color:var(--fg);background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:3px 6px}
+/* v4: compact card controls, tooltip layer */
+.person .actions .btn{padding:4px 9px;font-size:.78rem;border-radius:6px}
+.person .actions{gap:5px}
+.big3 .pill{font-size:.76rem;padding:2px 7px}
+.tip{white-space:pre-line;line-height:1.35;box-shadow:0 6px 18px rgba(0,0,0,.25);max-width:300px}
+[data-tip]{cursor:help}
+button[data-tip],a[data-tip],select[data-tip],input[data-tip],.chip[data-tip],td[data-i][data-tip]{cursor:pointer}
+.term{text-decoration:underline dotted var(--muted);text-underline-offset:3px}
 </style>
 
 <div class="wrap">
@@ -348,8 +356,17 @@ const T={
   v90:'Written in the stars',v75:'Strong match',v60:'Workable',v45:'Challenging',v0:'Cosmic mismatch',
   conjunction:'conjunction',sextile:'sextile',square:'square',trine:'trine',opposition:'opposition',none:'no aspect',orb:'orb',
   matrixTitle:'Everyone with everyone',matrixNote:'Tap a cell to open that pair in Compatibility.',low:'low',high:'high',
-  disclaimer:'For entertainment only. Positions: astronomy-engine (VSOP87/ELP-based, about 1 arcminute) with a simplified fallback when the library cannot load. Houses: Placidus (equal houses above ±66° latitude). Time zones and daylight saving follow your browser\'s zone database. Towns: GeoNames (CC BY 4.0). People are stored only in this browser.',
-  engineOk:'Engine: astronomy-engine 2.1.19 · Placidus houses',engineFb:'Engine: simplified fallback (library did not load) · accuracy about 1°',
+  disclaimer:'For entertainment only. Positions: astronomy-engine (VSOP87/ELP-based, about 1 arcminute). Houses: Placidus (equal houses above ±66° latitude). Time zones and daylight saving follow your browser\'s zone database. Towns: GeoNames (CC BY 4.0). People are stored only in this browser.',
+  engineOk:'Engine: astronomy-engine 2.1.19 · Placidus houses',engineFb:'Engine: the astronomy library could not be loaded, so a simplified model is used (accuracy about 1°). Reload with internet access for precise positions.',
+  tip:{tab_people:'Add, edit and delete people; each card shows the big three',tab_chart:'Chart wheel, planet positions, houses and aspects for one person',tab_traits:'Stereotype personality reading from Sun, Moon, Ascendant, Venus and Mars',tab_compat:'Score and breakdown for any two people',tab_matrix:'Everyone with everyone at a glance',tab_guide:'What all of this means',langCs:'Čeština',langEn:'English',
+   add:'Opens the form; needs name, birth date, time and place',restore:'Brings back deleted sample people',sample:'Example person with made-up data; delete freely',btnChart:'Open this person\'s chart',btnEdit:'Change the birth data',btnDel:'Remove from this browser (asks once)',chip:'Switch to this person',
+   fName:'Any label; shown everywhere',fDate:'Day, month and year of birth',fTime:'Local clock time at the birth place. The Ascendant changes sign about every 2 hours, so minutes matter.',fUnk:'Without a time, noon is used: the Sun and most planets are fine, the Moon may be off by up to 7°, the Ascendant and houses are guesses.',fPlace:'Provides latitude, longitude and time zone. Type at least two letters; Czech names of foreign cities work too.',fManual:'For places not in the list: name, coordinates and time zone by hand',
+   degree:'Position inside the sign, 0–30°',houseHdr:'Area of life where this body shows up (Placidus houses)',meanHdr:'What this body represents in pop astrology',hsys:'Placidus: unequal houses from the time it takes points to rise (the usual choice). Equal: twelve 30° houses from the Ascendant.',signCell:'Element · modality · ruling planet',ac:'Ascendant: the sign rising on the eastern horizon at birth. Start of house 1; first impression and body.',mc:'Midheaven: the highest point of the ecliptic at birth. Start of house 10; career and public role.',orb:'Orb: how far from the exact angle. Smaller is stronger.',
+   ruler:'The planet traditionally in charge of this sign',balance:'How many of the 11 points (10 planets + Ascendant) fall in each group. A dominant group colours the whole personality.',
+   ring:'0–99, a weighted blend of ten classic synastry pairings. The Guide shows the formula.',verdict:'85+ written in the stars · 70+ strong · 55+ workable · 40+ challenging · below that, cosmic mismatch',factor:'Points = (pairing value − 0.5) × weight × 20. Positive helps, negative hurts.',pick:'Choose a person',matrixHdr:'Hover a cell for the verdict; click to open the pair',
+   el:{fire:'Fire: energy, enthusiasm, action, ego',earth:'Earth: practicality, patience, senses, money',air:'Air: ideas, talk, social life, detachment',water:'Water: feelings, intuition, memory, empathy'},
+   mod:{cardinal:'Cardinal: starts things, leads, initiates',fixed:'Fixed: sustains, persists, resists change',mutable:'Mutable: adapts, finishes, changes shape'},
+   asp:{conjunction:'Conjunction (0°): fused, the two act as one, intensified',sextile:'Sextile (60°): easy opportunity, mild harmony you have to use',square:'Square (90°): tension and friction; growth through effort',trine:'Trine (120°): natural flow, talent, things come easily',opposition:'Opposition (180°): polarity, attraction and conflict, awareness through the other',none:'No major aspect within orb: these two do not interact much'}},
   pairs:{sunSun:['Sun – Sun','core identities','Your basic natures sit well together.','Your basic natures pull in different directions.'],
    moonMoon:['Moon – Moon','emotional needs','You need the same things to feel safe.','What comforts one unsettles the other.'],
    sunMoonAB:['{A}\'s Sun – {B}\'s Moon','self meets heart','{A} naturally gives what {B} needs emotionally.','{A}\'s way of being rubs {B}\'s feelings the wrong way.'],
@@ -386,8 +403,17 @@ const T={
   v90:'Psáno ve hvězdách',v75:'Silná shoda',v60:'Dá se',v45:'Náročné',v0:'Kosmický nesoulad',
   conjunction:'konjunkce',sextile:'sextil',square:'kvadratura',trine:'trigon',opposition:'opozice',none:'bez aspektu',orb:'orbis',
   matrixTitle:'Každý s každým',matrixNote:'Klepnutím na políčko otevřete dvojici v záložce Shoda.',low:'nízká',high:'vysoká',
-  disclaimer:'Jen pro zábavu. Pozice: knihovna astronomy-engine (na základě VSOP87/ELP, přesnost asi 1 úhlová minuta), při nedostupnosti knihovny zjednodušený model. Domy: Placidus (nad ±66° šířky rovné domy). Časová pásma a letní čas podle databáze pásem v prohlížeči. Obce: GeoNames (CC BY 4.0). Lidé jsou uloženi jen v tomto prohlížeči.',
-  engineOk:'Výpočet: astronomy-engine 2.1.19 · domy Placidus',engineFb:'Výpočet: zjednodušený model (knihovna se nenačetla) · přesnost asi 1°',
+  disclaimer:'Jen pro zábavu. Pozice: knihovna astronomy-engine (na základě VSOP87/ELP, přesnost asi 1 úhlová minuta). Domy: Placidus (nad ±66° šířky rovné domy). Časová pásma a letní čas podle databáze pásem v prohlížeči. Obce: GeoNames (CC BY 4.0). Lidé jsou uloženi jen v tomto prohlížeči.',
+  engineOk:'Výpočet: astronomy-engine 2.1.19 · domy Placidus',engineFb:'Výpočet: astronomická knihovna se nenačetla, používá se zjednodušený model (přesnost asi 1°). Pro přesné pozice načtěte stránku znovu s připojením k internetu.',
+  tip:{tab_people:'Přidávejte, upravujte a mažte lidi; karta ukazuje velkou trojku',tab_chart:'Kolo horoskopu, pozice planet, domy a aspekty jedné osoby',tab_traits:'Stereotypní čtení povahy ze Slunce, Měsíce, Ascendentu, Venuše a Marsu',tab_compat:'Skóre a rozbor pro libovolné dva lidi',tab_matrix:'Každý s každým na jeden pohled',tab_guide:'Co to všechno znamená',langCs:'Čeština',langEn:'English',
+   add:'Otevře formulář; je potřeba jméno, datum, čas a místo narození',restore:'Vrátí smazané ukázkové osoby',sample:'Ukázková osoba se smyšlenými údaji; klidně smažte',btnChart:'Otevřít horoskop této osoby',btnEdit:'Změnit údaje o narození',btnDel:'Odstranit z tohoto prohlížeče (jednou se zeptá)',chip:'Přepnout na tuto osobu',
+   fName:'Libovolné označení; zobrazuje se všude',fDate:'Den, měsíc a rok narození',fTime:'Místní čas v místě narození. Ascendent mění znamení asi každé 2 hodiny, takže na minutách záleží.',fUnk:'Bez času se použije poledne: Slunce a většina planet sedí, Měsíc může být až o 7° jinde, Ascendent a domy jsou odhad.',fPlace:'Dává zeměpisnou šířku, délku a časové pásmo. Napište aspoň dvě písmena; fungují i české názvy cizích měst.',fManual:'Pro místa, která v seznamu nejsou: název, souřadnice a pásmo ručně',
+   degree:'Poloha uvnitř znamení, 0–30°',houseHdr:'Oblast života, kde se těleso projevuje (domy Placidus)',meanHdr:'Co těleso v populární astrologii představuje',hsys:'Placidus: nestejné domy podle času, za který body vycházejí (obvyklá volba). Rovné: dvanáct domů po 30° od Ascendentu.',signCell:'Živel · kvalita · vládnoucí planeta',ac:'Ascendent: znamení vycházející na východním obzoru při narození. Začátek 1. domu; první dojem a tělo.',mc:'Střed nebes: nejvyšší bod ekliptiky při narození. Začátek 10. domu; kariéra a veřejná role.',orb:'Orbis: jak daleko od přesného úhlu. Menší je silnější.',
+   ruler:'Planeta, která tradičně znamení vládne',balance:'Kolik z 11 bodů (10 planet + Ascendent) padne do které skupiny. Převažující skupina zbarví celou povahu.',
+   ring:'0–99, vážený mix deseti klasických synastrických dvojic. Vzorec je v Průvodci.',verdict:'85+ psáno ve hvězdách · 70+ silná shoda · 55+ dá se · 40+ náročné · níže kosmický nesoulad',factor:'Body = (hodnota dvojice − 0,5) × váha × 20. Kladné pomáhají, záporné škodí.',pick:'Vyberte osobu',matrixHdr:'Najetím zobrazíte verdikt; klepnutím otevřete dvojici',
+   el:{fire:'Oheň: energie, nadšení, akce, ego',earth:'Země: praktičnost, trpělivost, smysly, peníze',air:'Vzduch: myšlenky, řeč, společenský život, odstup',water:'Voda: city, intuice, paměť, empatie'},
+   mod:{cardinal:'Kardinální: začíná, vede, iniciuje',fixed:'Pevné: udržuje, vytrvává, brání se změně',mutable:'Proměnlivé: přizpůsobuje se, dokončuje, mění tvar'},
+   asp:{conjunction:'Konjunkce (0°): splynutí, planety působí jako jedna, zesíleně',sextile:'Sextil (60°): snadná příležitost, mírný soulad, který je třeba využít',square:'Kvadratura (90°): napětí a tření; růst skrze úsilí',trine:'Trigon (120°): přirozený tok, nadání, věci jdou samy',opposition:'Opozice (180°): polarita, přitažlivost i konflikt, uvědomění skrze druhého',none:'Žádný hlavní aspekt v orbisu: tyto dvě planety spolu moc nemluví'}},
   pairs:{sunSun:['Slunce – Slunce','jádro osobnosti','Vaše základní povahy si sedí.','Vaše základní povahy táhnou každá jinam.'],
    moonMoon:['Měsíc – Měsíc','citové potřeby','K pocitu bezpečí potřebujete totéž.','Co jednoho uklidňuje, druhého znervózňuje.'],
    sunMoonAB:['Slunce {A} – Měsíc {B}','osobnost a srdce','{A} přirozeně dává to, co {B} citově potřebuje.','Způsob, jakým {A} je, dráždí city {B}.'],
@@ -452,6 +478,9 @@ let people=store.get('people',null);if(!Array.isArray(people))people=SAMPLES.map
 for(const p of people){if(p.city&&!p.place){p.place=p.city;p.cc='';p.admin='';delete p.city}}
 let tab=store.get('tab','people'),sel=store.get('sel',null),pairSel=store.get('pair',[null,null]),hsys=store.get('hsys','placidus'),editing=null,formErr='',picked=null,manual=false;
 const t=k=>T[lang][k]??k;
+const tp=k=>T[lang].tip[k]??'';
+const da=s=>s?` data-tip="${esc(s)}"`:'';
+const signTip=s=>`${s[lang].n}: ${s[lang].kw.join(', ')}\n${tp('el')[s.el]}\n${tp('mod')[s.mod]}\n${t('ruler')}: ${t(s.ruler.toLowerCase())}`;
 const sname=s=>s[lang].n;
 const sloc=s=>lang==='cs'?s.cs.loc:`in ${s.en.n}`;
 function ensureCharts(){for(const p of people){if(!p.chart){try{p.chart=ENGINE.chart(p,hsys)}catch(e){p.chart=null}}}people=people.filter(p=>p.chart)}
@@ -466,7 +495,8 @@ function render(){
   document.querySelectorAll('[data-i]').forEach(n=>n.textContent=t(n.dataset.i));
   document.getElementById('lang-cs').setAttribute('aria-pressed',lang==='cs');
   document.getElementById('lang-en').setAttribute('aria-pressed',lang==='en');
-  document.querySelectorAll('nav.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===tab));
+  document.querySelectorAll('nav.tabs button').forEach(b=>{b.setAttribute('aria-selected',b.dataset.tab===tab);b.dataset.tip=tp(b.dataset.i)});
+  document.getElementById('lang-cs').dataset.tip=tp('langCs');document.getElementById('lang-en').dataset.tip=tp('langEn');
   document.documentElement.lang=lang;
   const eng=document.getElementById('engine');eng.className='engine'+(ENGINE.precise?'':' fb');eng.querySelector('span').textContent=ENGINE.precise?t('engineOk'):t('engineFb');
   const m=document.getElementById('main');m.replaceChildren();
@@ -475,14 +505,14 @@ function render(){
 }
 function personChips(current,onPick){
   const c=el('<div class="chips"></div>');
-  for(const p of people){const s=signOf(p.chart.sun);const b=el(`<button class="chip" aria-pressed="${p.id===current}"><span class="dot bg-${s.el}"></span>${esc(p.name)} <span class="muted">${s.g}</span></button>`);b.onclick=()=>onPick(p.id);c.append(b)}
+  for(const p of people){const s=signOf(p.chart.sun);const b=el(`<button class="chip" aria-pressed="${p.id===current}"${da(tp('chip')+'\n'+bornLine(p)+'\n'+t('sun')+': '+sname(s))}><span class="dot bg-${s.el}"></span>${esc(p.name)} <span class="muted">${s.g}</span></button>`);b.onclick=()=>onPick(p.id);c.append(b)}
   return c;
 }
 function bornLine(p){const dt=`${p.d}. ${p.m}. ${p.y}`;const tm=p.unknownTime?'':`, ${String(p.h).padStart(2,'0')}:${String(p.mi).padStart(2,'0')}`;return `${t('born')} ${dt}${tm}, ${placeLabel(p,false)}`}
 
 /* --- People --- */
 function renderPeople(m){
-  const top=el(`<div class="row" style="justify-content:space-between;margin-bottom:14px"><h2>${t('tab_people')} <span class="muted num" style="font-family:var(--font-body);font-size:1rem">(${people.length})</span></h2><div class="row"><button class="btn ghost" id="restore">${t('restore')}</button><button class="btn primary" id="add">${t('add')}</button></div></div>`);
+  const top=el(`<div class="row" style="justify-content:space-between;margin-bottom:14px"><h2>${t('tab_people')} <span class="muted num" style="font-family:var(--font-body);font-size:1rem">(${people.length})</span></h2><div class="row"><button class="btn ghost" id="restore"${da(tp('restore'))}>${t('restore')}</button><button class="btn primary" id="add"${da(tp('add'))}>${t('add')}</button></div></div>`);
   top.querySelector('#add').onclick=()=>{editing={};picked=null;manual=false;formErr='';render()};
   top.querySelector('#restore').onclick=()=>{for(const s of SAMPLES)if(!people.find(p=>p.id===s.id))people.push({...s});render()};
   m.append(top);
@@ -491,10 +521,11 @@ function renderPeople(m){
   const grid=el('<div class="people"></div>');
   for(const p of people){
     const c=p.chart,s=signOf(c.sun),mo=signOf(c.moon),as=signOf(c.asc);
-    const card=el(`<div class="card person"><div class="name"><h3>${esc(p.name)}</h3>${p.sample?`<span class="sample">${t('sample')}</span>`:''}</div>
+    const M=T[lang].mean;
+    const card=el(`<div class="card person"><div class="name"><h3>${esc(p.name)}</h3>${p.sample?`<span class="sample"${da(tp('sample'))}>${t('sample')}</span>`:''}</div>
       <p class="small muted">${esc(bornLine(p))}</p>
-      <div class="big3"><span class="pill"><span class="g el-${s.el}">${s.g}</span>${t('sun')}: ${sname(s)}</span><span class="pill"><span class="g el-${mo.el}">${mo.g}</span>${t('moon')}: ${sname(mo)}</span><span class="pill"><span class="g el-${as.el}">${as.g}</span>AC: ${sname(as)}</span></div>
-      <div class="actions"><button class="btn" data-a="chart">${t('tab_chart')}</button><button class="btn" data-a="edit">${t('edit')}</button><button class="btn danger" data-a="del">${t('del')}</button></div></div>`);
+      <div class="big3"><span class="pill"${da(t('sun')+': '+M.sun+'\n'+signTip(s))}><span class="g el-${s.el}">${s.g}</span>${t('sun')}: ${sname(s)}</span><span class="pill"${da(t('moon')+': '+M.moon+'\n'+signTip(mo))}><span class="g el-${mo.el}">${mo.g}</span>${t('moon')}: ${sname(mo)}</span><span class="pill"${da(t('asc')+': '+M.asc+'\n'+signTip(as))}><span class="g el-${as.el}">${as.g}</span>AC: ${sname(as)}</span></div>
+      <div class="actions"><button class="btn" data-a="chart"${da(tp('btnChart'))}>${t('tab_chart')}</button><button class="btn" data-a="edit"${da(tp('btnEdit'))}>${t('edit')}</button><button class="btn danger" data-a="del"${da(tp('btnDel'))}>${t('del')}</button></div></div>`);
     card.querySelector('[data-a=chart]').onclick=()=>{sel=p.id;tab='chart';render()};
     card.querySelector('[data-a=edit]').onclick=()=>{editing={...p};picked=p.place&&p.cc?{place:p.place,admin:p.admin,cc:p.cc,lat:p.lat,lon:p.lon,tz:p.tz}:null;manual=!picked;formErr='';render();window.scrollTo({top:0})};
     card.querySelector('[data-a=del]').onclick=e=>{const b=e.currentTarget;if(b.dataset.c){people=people.filter(x=>x.id!==p.id);render()}else{b.dataset.c='1';b.textContent=t('confirmDel')}};
@@ -508,14 +539,14 @@ function renderForm(){
   const timeVal=e.y&&!e.unknownTime?`${String(e.h).padStart(2,'0')}:${String(e.mi).padStart(2,'0')}`:'';
   const tzOpts=TZS_ALL().map(z=>`<option value="${z}" ${(e.tz||'Europe/Prague')===z?'selected':''}>${z}</option>`).join('');
   const f=el(`<form class="edit card" style="margin-bottom:18px" autocomplete="off">
-    <label class="f full">${t('name')}<input id="f-name" required value="${esc(e.name||'')}"></label>
-    <label class="f">${t('date')}<input id="f-date" type="date" required value="${dateVal}" min="1900-01-01" max="2100-12-31"></label>
-    <label class="f">${t('time')}<input id="f-time" type="time" value="${timeVal}" ${e.unknownTime?'disabled':''}></label>
-    <label class="chk full"><input id="f-unk" type="checkbox" ${e.unknownTime?'checked':''}> ${t('unknownTime')}</label>
+    <label class="f full"${da(tp('fName'))}>${t('name')}<input id="f-name" required value="${esc(e.name||'')}"></label>
+    <label class="f"${da(tp('fDate'))}>${t('date')}<input id="f-date" type="date" required value="${dateVal}" min="1900-01-01" max="2100-12-31"></label>
+    <label class="f"${da(tp('fTime'))}>${t('time')}<input id="f-time" type="time" value="${timeVal}" ${e.unknownTime?'disabled':''}></label>
+    <label class="chk full"${da(tp('fUnk'))}><input id="f-unk" type="checkbox" ${e.unknownTime?'checked':''}> ${t('unknownTime')}</label>
     <div class="full place" id="search-block" ${manual?'hidden':''}>
-      <label class="f">${t('place')}<input id="f-q" placeholder="${esc(t('placeHint'))}" value=""></label>
+      <label class="f"${da(tp('fPlace'))}>${t('place')}<input id="f-q" placeholder="${esc(t('placeHint'))}" value=""></label>
       <div class="suggest" id="sug" hidden></div>
-      <div class="row" style="justify-content:space-between;margin-top:6px"><div class="picked" id="picked"></div><button type="button" class="linkbtn" id="to-manual">${t('manual')}</button></div>
+      <div class="row" style="justify-content:space-between;margin-top:6px"><div class="picked" id="picked"></div><button type="button" class="linkbtn" id="to-manual"${da(tp('fManual'))}>${t('manual')}</button></div>
       <p class="small muted" id="places-note" style="margin-top:4px">${placesReady?t('placesLoaded').replace('{n}',PLACES.p.length.toLocaleString(lang)):t('placesSeed')}</p>
     </div>
     <div class="full" id="manual-block" ${manual?'':'hidden'}>
@@ -567,35 +598,35 @@ function wheelSVG(c){
   const arc=(L0,L1,r0,r1)=>{const [x0,y0]=pt(L0,r1),[x1,y1]=pt(L1,r1),[x2,y2]=pt(L1,r0),[x3,y3]=pt(L0,r0);return `M${x0},${y0}A${r1},${r1} 0 0 0 ${x1},${y1}L${x2},${y2}A${r0},${r0} 0 0 1 ${x3},${y3}Z`};
   let s=`<svg class="wheel" viewBox="0 0 ${S} ${S}" role="img" aria-label="Natal chart wheel"><rect width="${S}" height="${S}" fill="var(--surface)" rx="12"/>`;
   s+=`<circle cx="${cx}" cy="${cy}" r="${rO}" fill="none" stroke="var(--line)"/><circle cx="${cx}" cy="${cy}" r="${rS}" fill="none" stroke="var(--line)"/><circle cx="${cx}" cy="${cy}" r="${rH}" fill="none" stroke="var(--line)"/><circle cx="${cx}" cy="${cy}" r="${rIn}" fill="none" stroke="var(--line)"/>`;
-  SIGNS.forEach((sg,i)=>{const L0=i*30,L1=L0+30;s+=`<path d="${arc(L0,L1,rS,rO)}" fill="var(--${sg.el})" fill-opacity="0.14" stroke="var(--line)"/>`;const [x,y]=pt(L0+15,(rO+rS)/2);s+=`<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" font-size="20" fill="var(--${sg.el})">${sg.g}</text>`;
+  SIGNS.forEach((sg,i)=>{const L0=i*30,L1=L0+30;s+=`<path d="${arc(L0,L1,rS,rO)}" fill="var(--${sg.el})" fill-opacity="0.14" stroke="var(--line)"${da(signTip(sg))}/>`;const [x,y]=pt(L0+15,(rO+rS)/2);s+=`<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" font-size="20" fill="var(--${sg.el})" pointer-events="none">${sg.g}</text>`;
     for(let k=5;k<30;k+=5){const [a,b]=pt(L0+k,rS),[d,e]=pt(L0+k,rS+(k%10?4:7));s+=`<line x1="${a}" y1="${b}" x2="${d}" y2="${e}" stroke="var(--line)"/>`}});
-  for(let h=1;h<=12;h++){const L=c.cusps[h],Ln=c.cusps[h%12+1];const [x0,y0]=pt(L,rIn),[x1,y1]=pt(L,rS);const major=(h-1)%3===0;s+=`<line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}" stroke="${major?'var(--fg)':'var(--line)'}" stroke-width="${major?1.5:1}"/>`;const mid=L+ENGINE.rev(Ln-L)/2;const [tx,ty]=pt(mid,(rH+rIn)/2);s+=`<text x="${tx}" y="${ty}" text-anchor="middle" dominant-baseline="central" font-size="11" fill="var(--muted)" font-family="var(--font-body)">${h}</text>`}
-  const [ax,ay]=pt(c.asc,rO+12);s+=`<text x="${ax-4}" y="${ay}" text-anchor="end" dominant-baseline="central" font-size="11" font-weight="700" fill="var(--fg)" font-family="var(--font-body)">AC</text>`;
-  const [mx,my]=pt(c.mc,rO+12);s+=`<text x="${mx}" y="${my-2}" text-anchor="middle" font-size="11" font-weight="700" fill="var(--fg)" font-family="var(--font-body)">MC</text>`;
+  for(let h=1;h<=12;h++){const L=c.cusps[h],Ln=c.cusps[h%12+1];const [x0,y0]=pt(L,rIn),[x1,y1]=pt(L,rS);const major=(h-1)%3===0;s+=`<line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}" stroke="${major?'var(--fg)':'var(--line)'}" stroke-width="${major?1.5:1}"/>`;const mid=L+ENGINE.rev(Ln-L)/2;const [tx,ty]=pt(mid,(rH+rIn)/2);s+=`<text x="${tx}" y="${ty}" text-anchor="middle" dominant-baseline="central" font-size="11" fill="var(--muted)" font-family="var(--font-body)"${da(h+'. '+t('house').toLowerCase()+': '+T[lang].houses[h-1])}>${h}</text>`}
+  const [ax,ay]=pt(c.asc,rO+12);s+=`<text x="${ax-4}" y="${ay}" text-anchor="end" dominant-baseline="central" font-size="11" font-weight="700" fill="var(--fg)" font-family="var(--font-body)"${da(tp('ac'))}>AC</text>`;
+  const [mx,my]=pt(c.mc,rO+12);s+=`<text x="${mx}" y="${my-2}" text-anchor="middle" font-size="11" font-weight="700" fill="var(--fg)" font-family="var(--font-body)"${da(tp('mc'))}>MC</text>`;
   const pls=BODIES.slice(0,10).map(([k,g])=>({k,g,L:ENGINE.rev(c[k]),draw:ENGINE.rev(c[k])})).sort((a,b)=>a.L-b.L);
   for(let pass=0;pass<4;pass++)for(let i=0;i<pls.length;i++){const a=pls[i],b=pls[(i+1)%pls.length];let d=ENGINE.rev(b.draw-a.draw);if(d<9){const push=(9-d)/2;a.draw=ENGINE.rev(a.draw-push);b.draw=ENGINE.rev(b.draw+push)}}
   for(let i=0;i<pls.length;i++)for(let j=i+1;j<pls.length;j++){const a=aspect(pls[i].L,pls[j].L);if(a.type==='none'||a.type==='conjunction')continue;const [x0,y0]=pt(pls[i].L,rIn),[x1,y1]=pt(pls[j].L,rIn);const hard=a.type==='square'||a.type==='opposition';s+=`<line x1="${x0}" y1="${y0}" x2="${x1}" y2="${y1}" stroke="${hard?'var(--fire)':'var(--earth)'}" stroke-opacity="${a.type==='sextile'?.45:.7}" stroke-width="1"/>`}
-  for(const p of pls){const [x,y]=pt(p.draw,rP+10),[tx,ty]=pt(p.L,rH),[ux,uy]=pt(p.draw,rP+24);s+=`<line x1="${tx}" y1="${ty}" x2="${ux}" y2="${uy}" stroke="var(--muted)" stroke-width="1"/><circle cx="${ux}" cy="${uy}" r="2" fill="var(--muted)"/><text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" font-size="19" fill="var(--fg)">${p.g}</text>`;const [dx,dy]=pt(p.draw,rP-10);s+=`<text x="${dx}" y="${dy}" text-anchor="middle" dominant-baseline="central" font-size="9" fill="var(--muted)" font-family="var(--font-body)">${Math.floor(degIn(p.L))}°</text>`}
+  for(const p of pls){const [x,y]=pt(p.draw,rP+10),[tx,ty]=pt(p.L,rH),[ux,uy]=pt(p.draw,rP+24);const sg=signOf(p.L),hn=houseOf(p.L,c.cusps);s+=`<line x1="${tx}" y1="${ty}" x2="${ux}" y2="${uy}" stroke="var(--muted)" stroke-width="1"/><circle cx="${ux}" cy="${uy}" r="2" fill="var(--muted)"/><text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" font-size="19" fill="var(--fg)"${da(`${t(p.k)} ${fmtDeg(p.L)} ${sname(sg)}, ${hn}. ${t('house').toLowerCase()}\n${T[lang].mean[p.k]}\n${t('house')} ${hn}: ${T[lang].houses[hn-1]}`)}>${p.g}</text>`;const [dx,dy]=pt(p.draw,rP-10);s+=`<text x="${dx}" y="${dy}" text-anchor="middle" dominant-baseline="central" font-size="9" fill="var(--muted)" font-family="var(--font-body)">${Math.floor(degIn(p.L))}°</text>`}
   return s+'</svg>';
 }
 function renderChart(m){
   if(!people.length){m.append(el(`<div class="card empty">${t('empty')}</div>`));return}
   m.append(personChips(sel,id=>{sel=id;render()}));
   const p=people.find(x=>x.id===sel),c=p.chart;
-  const head=el(`<div class="row" style="justify-content:space-between;margin-bottom:14px"><div><h2>${esc(p.name)}</h2><p class="muted small">${esc(bornLine(p))}${p.unknownTime?` · ${t('unknownTime').split('(')[0].trim()}`:''}</p></div><label class="hsel">${t('houseSystem')} <select id="hsys"><option value="placidus" ${hsys==='placidus'?'selected':''}>${t('placidus')}</option><option value="equal" ${hsys==='equal'?'selected':''}>${t('equal')}</option></select>${c.system==='equal'&&hsys==='placidus'?`<span class="muted">(${t('equalForced')})</span>`:''}</label></div>`);
+  const head=el(`<div class="row" style="justify-content:space-between;margin-bottom:14px"><div><h2>${esc(p.name)}</h2><p class="muted small">${esc(bornLine(p))}${p.unknownTime?` · ${t('unknownTime').split('(')[0].trim()}`:''}</p></div><label class="hsel"${da(tp('hsys'))}>${t('houseSystem')} <select id="hsys"><option value="placidus" ${hsys==='placidus'?'selected':''}>${t('placidus')}</option><option value="equal" ${hsys==='equal'?'selected':''}>${t('equal')}</option></select>${c.system==='equal'&&hsys==='placidus'?`<span class="muted">(${t('equalForced')})</span>`:''}</label></div>`);
   head.querySelector('#hsys').onchange=ev=>{hsys=ev.target.value;for(const x of people)delete x.chart;render()};
   m.append(head);
   const wrap=el('<div class="chart-wrap"></div>');
   wrap.append(el(`<div class="card" style="padding:8px">${wheelSVG(c)}</div>`));
   let rows='';
-  for(const [k,g] of BODIES){const L=c[k],s=signOf(L),hn=houseOf(L,c.cusps);rows+=`<tr><td class="g">${g}</td><td>${t(k)}</td><td class="sg"><span class="sw bg-${s.el}"></span>${s.g} ${sname(s)}</td><td class="num">${fmtDeg(L)}</td><td class="num" title="${esc(hn+': '+T[lang].houses[hn-1])}">${hn}</td><td class="mean">${T[lang].mean[k]}</td></tr>`}
-  wrap.append(el(`<div class="card" style="padding:8px 4px;overflow-x:auto"><table class="pl"><thead><tr><th></th><th>${t('planet')}</th><th>${t('sign')}</th><th>${t('degree')}</th><th>${t('house')}</th><th>${t('meaning')}</th></tr></thead><tbody>${rows}</tbody></table></div>`));
+  for(const [k,g] of BODIES){const L=c[k],s=signOf(L),hn=houseOf(L,c.cusps);const bodyTip=k==='asc'?tp('ac'):k==='mc'?tp('mc'):`${t(k)}: ${T[lang].mean[k]}`;rows+=`<tr><td class="g"${da(bodyTip)}>${g}</td><td${da(bodyTip)}>${t(k)}</td><td class="sg"${da(signTip(s))}><span class="sw bg-${s.el}"></span>${s.g} ${sname(s)}</td><td class="num"${da(tp('degree'))}>${fmtDeg(L)}</td><td class="num"${da(hn+'. '+t('house').toLowerCase()+': '+T[lang].houses[hn-1])}>${hn}</td><td class="mean"${da(bodyTip)}>${T[lang].mean[k]}</td></tr>`}
+  wrap.append(el(`<div class="card" style="padding:8px 4px;overflow-x:auto"><table class="pl"><thead><tr><th></th><th>${t('planet')}</th><th${da(tp('signCell'))}>${t('sign')}</th><th${da(tp('degree'))}>${t('degree')}</th><th${da(tp('houseHdr'))}>${t('house')}</th><th${da(tp('meanHdr'))}>${t('meaning')}</th></tr></thead><tbody>${rows}</tbody></table></div>`));
   m.append(wrap);
   const list=[];const P=BODIES.slice(0,10);
   for(let i=0;i<P.length;i++)for(let j=i+1;j<P.length;j++){const a=aspect(c[P[i][0]],c[P[j][0]]);if(a.type!=='none')list.push({a:P[i],b:P[j],asp:a})}
   list.sort((x,y)=>x.asp.orb-y.asp.orb);
   const cls=a=>a==='conjunction'?'conj':(a==='square'||a==='opposition')?'hard':'soft';
-  m.append(el(`<div class="card" style="margin-top:18px"><h3 style="margin-bottom:10px">${t('aspects')}</h3>${list.length?`<div class="asp-list">${list.map(x=>`<div class="a ${cls(x.asp.type)}"><span class="sym">${ASPSYM[x.asp.type]}</span><span>${x.a[1]} ${t(x.a[0])} – ${x.b[1]} ${t(x.b[0])}</span><span class="muted small num" style="margin-left:auto">${t(x.asp.type)} ${x.asp.orb.toFixed(1)}°</span></div>`).join('')}</div>`:`<p class="muted">${t('noAspects')}</p>`}</div>`));
+  m.append(el(`<div class="card" style="margin-top:18px"><h3 style="margin-bottom:10px">${t('aspects')}</h3>${list.length?`<div class="asp-list">${list.map(x=>`<div class="a ${cls(x.asp.type)}"${da(tp('asp')[x.asp.type]+'\n'+t(x.a[0])+': '+T[lang].mean[x.a[0]]+'\n'+t(x.b[0])+': '+T[lang].mean[x.b[0]]+'\n'+tp('orb'))}><span class="sym">${ASPSYM[x.asp.type]}</span><span>${x.a[1]} ${t(x.a[0])} – ${x.b[1]} ${t(x.b[0])}</span><span class="muted small num" style="margin-left:auto">${t(x.asp.type)} ${x.asp.orb.toFixed(1)}°</span></div>`).join('')}</div>`:`<p class="muted">${t('noAspects')}</p>`}</div>`));
 }
 
 /* --- Traits --- */
@@ -607,11 +638,12 @@ function renderTraits(m){
   const st=el('<div class="stack"></div>');
   const items=[['sun','sunIn','sunLbl','sun'],['moon','moonIn','moonLbl','moon'],['asc','ascIn','ascLbl','asc'],['venus','venusIn','venusLbl','venus'],['mars','marsIn','marsLbl','mars']];
   for(const [k,inKey,lbl,txt] of items){const s=signOf(c[k]);const kw=s[lang].kw.map(w=>`<span class="pill">${w}</span>`).join('');const hn=houseOf(c[k],c.cusps);
-    st.append(el(`<div class="card trait"><div class="g el-${s.el}">${s.g}</div><div><h3>${t(inKey)} ${sloc(s)} <span>· ${t(lbl)}</span></h3>${k==='sun'?`<div class="kw">${kw}</div><p class="small muted">${t('element')}: ${t(s.el)} · ${t('modality')}: ${t(s.mod)} · ${t('ruler')}: ${t(s.ruler.toLowerCase())}</p>`:''}<p style="margin-top:6px">${s[lang][txt]}</p>${k!=='asc'?`<p class="small muted" style="margin-top:6px">${t('house')} ${hn}: ${T[lang].houses[hn-1]}</p>`:''}</div></div>`))}
+    const bodyTip=`${t(k)}: ${T[lang].mean[k]}`;
+    st.append(el(`<div class="card trait"><div class="g el-${s.el}"${da(signTip(s))}>${s.g}</div><div><h3><span${da(bodyTip)}>${t(inKey)}</span> <span class="term"${da(signTip(s))}>${sloc(s)}</span> <span${da(bodyTip)}>· ${t(lbl)}</span></h3>${k==='sun'?`<div class="kw">${kw}</div><p class="small muted"><span class="term"${da(tp('el')[s.el])}>${t('element')}: ${t(s.el)}</span> · <span class="term"${da(tp('mod')[s.mod])}>${t('modality')}: ${t(s.mod)}</span> · <span class="term"${da(tp('ruler'))}>${t('ruler')}: ${t(s.ruler.toLowerCase())}</span></p>`:''}<p style="margin-top:6px">${s[lang][txt]}</p>${k!=='asc'?`<p class="small muted" style="margin-top:6px"${da(tp('houseHdr'))}>${t('house')} ${hn}: ${T[lang].houses[hn-1]}</p>`:''}</div></div>`))}
   const cnt={fire:0,earth:0,air:0,water:0},mod={cardinal:0,fixed:0,mutable:0};
   for(const [k] of BODIES.slice(0,11)){const s=signOf(c[k]);cnt[s.el]++;mod[s.mod]++}
-  const bar=(k,v,max,style)=>`<span>${t(k)}</span><div class="bar"><i style="width:${v/max*100}%;${style}"></i></div><span class="num small muted">${v}</span>`;
-  st.append(el(`<div class="card"><h3>${t('balance')}</h3><p class="small muted" style="margin-bottom:10px">${t('balanceNote')}</p><div class="grid-2"><div class="bars">${['fire','earth','air','water'].map(k=>bar(k,cnt[k],11,`background:var(--${k})`)).join('')}</div><div class="bars">${['cardinal','fixed','mutable'].map(k=>bar(k,mod[k],11,'background:var(--accent)')).join('')}</div></div></div>`));
+  const bar=(k,v,max,style,tipText)=>`<span class="term"${da(tipText)}>${t(k)}</span><div class="bar"${da(tipText)}><i style="width:${v/max*100}%;${style}"></i></div><span class="num small muted">${v}</span>`;
+  st.append(el(`<div class="card"><h3${da(tp('balance'))}>${t('balance')}</h3><p class="small muted" style="margin-bottom:10px">${t('balanceNote')}</p><div class="grid-2"><div class="bars">${['fire','earth','air','water'].map(k=>bar(k,cnt[k],11,`background:var(--${k})`,tp('el')[k])).join('')}</div><div class="bars">${['cardinal','fixed','mutable'].map(k=>bar(k,mod[k],11,'background:var(--accent)',tp('mod')[k])).join('')}</div></div></div>`));
   m.append(st);
 }
 
@@ -622,21 +654,21 @@ function renderCompat(m){
   if(people.length<2){m.append(el(`<div class="card empty">${t('needTwo')}</div>`));return}
   let [a,b]=pairSel;if(!people.find(p=>p.id===a))a=people[0].id;if(!people.find(p=>p.id===b)||b===a)b=people.find(p=>p.id!==a).id;pairSel=[a,b];
   const opts=id=>people.map(p=>`<option value="${p.id}" ${p.id===id?'selected':''}>${esc(p.name)} ${signOf(p.chart.sun).g}</option>`).join('');
-  const pick=el(`<div class="card pair-pick" style="margin-bottom:18px"><label class="f">${t('pickTwo')}<select id="pa">${opts(a)}</select></label><div class="vs">×</div><label class="f">&nbsp;<select id="pb">${opts(b)}</select></label></div>`);
+  const pick=el(`<div class="card pair-pick" style="margin-bottom:18px"><label class="f"${da(tp('pick'))}>${t('pickTwo')}<select id="pa">${opts(a)}</select></label><div class="vs">×</div><label class="f"${da(tp('pick'))}>&nbsp;<select id="pb">${opts(b)}</select></label></div>`);
   pick.querySelector('#pa').onchange=e=>{pairSel=[e.target.value,pairSel[1]];render()};
   pick.querySelector('#pb').onchange=e=>{pairSel=[pairSel[0],e.target.value];render()};
   m.append(pick);
   if(a===b){m.append(el(`<p class="muted">${t('sameTwo')}</p>`));return}
   const A=people.find(p=>p.id===a),B=people.find(p=>p.id===b),r=compat(A,B);
   const sa=signOf(A.chart.sun),sb=signOf(B.chart.sun);
-  m.append(el(`<div class="card score" style="margin-bottom:18px">${ringSVG(r.score)}<div><p class="small muted" style="text-transform:uppercase;letter-spacing:.06em;font-weight:700">${t('score')}</p><h2>${esc(A.name)} × ${esc(B.name)}</h2><p class="verdict" style="margin:4px 0 8px">${verdict(r.score)}</p><p class="small"><span class="pill"><span class="g el-${sa.el}">${sa.g}</span>${sname(sa)}</span> <span class="pill"><span class="g el-${sb.el}">${sb.g}</span>${sname(sb)}</span></p><p style="margin-top:8px">${T[lang].elpairs[r.elKey]}</p></div></div>`));
+  m.append(el(`<div class="card score" style="margin-bottom:18px"><div${da(tp('ring'))}>${ringSVG(r.score)}</div><div><p class="small muted" style="text-transform:uppercase;letter-spacing:.06em;font-weight:700"${da(tp('ring'))}>${t('score')}</p><h2>${esc(A.name)} × ${esc(B.name)}</h2><p class="verdict" style="margin:4px 0 8px"${da(tp('verdict'))}>${verdict(r.score)}</p><p class="small"><span class="pill"${da(t('sun')+' '+esc(A.name)+'\n'+signTip(sa))}><span class="g el-${sa.el}">${sa.g}</span>${sname(sa)}</span> <span class="pill"${da(t('sun')+' '+esc(B.name)+'\n'+signTip(sb))}><span class="g el-${sb.el}">${sb.g}</span>${sname(sb)}</span></p><p style="margin-top:8px"${da(tp('el')[sa.el]+'\n'+tp('el')[sb.el])}>${T[lang].elpairs[r.elKey]}</p></div></div>`));
   const sorted=[...r.factors].sort((x,y)=>y.w*(y.s-.5)-x.w*(x.s-.5));
   const fx=el(`<div class="card"><div class="row" style="justify-content:space-between;margin-bottom:10px"><h3>${t('breakdown')}</h3><button class="linkbtn" id="how">${t('howScored')}</button></div><div class="factors"></div></div>`);
   fx.querySelector('#how').onclick=()=>{tab='guide';render();document.getElementById('g6')?.scrollIntoView({behavior:'smooth'})};
   const sub=k=>k.replaceAll('{A}',esc(A.name)).replaceAll('{B}',esc(B.name));
   for(const f of sorted){const P=T[lang].pairs[f.k],pos=f.s>=.5,pts=Math.round((f.s-.5)*f.w*20);
     const asp=f.asp.type==='none'?t('none'):`${ASPSYM[f.asp.type]} ${t(f.asp.type)} (${t('orb')} ${f.asp.orb.toFixed(1)}°)`;
-    fx.querySelector('.factors').append(el(`<div class="factor ${pos?'pos':'neg'}"><span class="t">${sub(P[0])} <span class="muted" style="font-weight:500">· ${P[1]}</span></span><span class="s">${pts>0?'+':''}${pts}</span><span class="d">${sub(pos?P[2]:P[3])} <span class="muted">— ${asp}</span></span></div>`))}
+    fx.querySelector('.factors').append(el(`<div class="factor ${pos?'pos':'neg'}"><span class="t">${sub(P[0])} <span class="muted" style="font-weight:500">· ${P[1]}</span></span><span class="s"${da(tp('factor')+'\n'+(lang==='cs'?'Váha':'Weight')+' '+f.w+', '+(lang==='cs'?'hodnota':'value')+' '+f.s.toFixed(2))}>${pts>0?'+':''}${pts}</span><span class="d">${sub(pos?P[2]:P[3])} <span class="muted term"${da(tp('asp')[f.asp.type]+(f.asp.orb!==null?'\n'+tp('orb'):''))}>— ${asp}</span></span></div>`))}
   m.append(fx);
 }
 
@@ -646,20 +678,16 @@ function renderMatrix(m){
   m.append(el(`<div style="margin-bottom:14px"><h2>${t('matrixTitle')}</h2><p class="muted small">${t('matrixNote')}</p></div>`));
   const n=people.length;const sc=Array.from({length:n},()=>Array(n).fill(null));
   for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){sc[i][j]=sc[j][i]=compat(people[i],people[j]).score}
-  let h=`<table class="mx"><thead><tr><th></th>${people.map(p=>`<th class="col">${esc(p.name)}</th>`).join('')}</tr></thead><tbody>`;
-  for(let i=0;i<n;i++){h+=`<tr><th>${esc(people[i].name)} <span class="muted">${signOf(people[i].chart.sun).g}</span></th>`;
-    for(let j=0;j<n;j++){if(i===j){h+='<td class="self">—</td>';continue}const v=sc[i][j],p=Math.round(Math.max(0,(v-10))/85*100);h+=`<td class="${v>=60?'hi':''}" data-i="${i}" data-j="${j}" style="background:color-mix(in oklab,var(--accent) ${p}%,var(--surface-2))" tabindex="0">${v}</td>`}
+  let h=`<table class="mx"><thead><tr><th${da(tp('matrixHdr'))}></th>${people.map(p=>`<th class="col"${da(bornLine(p))}>${esc(p.name)}</th>`).join('')}</tr></thead><tbody>`;
+  for(let i=0;i<n;i++){h+=`<tr><th${da(bornLine(people[i])+'\n'+t('sun')+': '+sname(signOf(people[i].chart.sun)))}>${esc(people[i].name)} <span class="muted">${signOf(people[i].chart.sun).g}</span></th>`;
+    for(let j=0;j<n;j++){if(i===j){h+='<td class="self">—</td>';continue}const v=sc[i][j],p=Math.round(Math.max(0,(v-10))/85*100);h+=`<td class="${v>=60?'hi':''}" data-i="${i}" data-j="${j}" style="background:color-mix(in oklab,var(--accent) ${p}%,var(--surface-2))" tabindex="0"${da(`${people[i].name} × ${people[j].name}: ${v} · ${verdict(v)}\n${t('matrixNote')}`)}>${v}</td>`}
     h+='</tr>'}
   h+='</tbody></table>';
-  const card=el(`<div class="card"><div class="matrix-wrap">${h}</div><div class="legend"><span>${t('low')}</span><span class="ramp"></span><span>${t('high')}</span></div></div>`);
-  const tip=document.getElementById('tip');
+  const card=el(`<div class="card"><div class="matrix-wrap">${h}</div><div class="legend"${da(tp('verdict'))}><span>${t('low')}</span><span class="ramp"></span><span>${t('high')}</span></div></div>`);
   card.querySelectorAll('td[data-i]').forEach(td=>{
     const i=+td.dataset.i,j=+td.dataset.j;
     td.onclick=()=>{pairSel=[people[i].id,people[j].id];tab='compat';render()};
     td.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();td.onclick()}};
-    td.onmouseenter=()=>{tip.textContent=`${people[i].name} × ${people[j].name}: ${sc[i][j]} · ${verdict(sc[i][j])}`;tip.hidden=false};
-    td.onmousemove=e=>{tip.style.left=Math.min(e.clientX+12,window.innerWidth-tip.offsetWidth-8)+'px';tip.style.top=(e.clientY+14)+'px'};
-    td.onmouseleave=()=>{tip.hidden=true};
   });
   m.append(card);
 }
@@ -675,6 +703,22 @@ function renderGuide(m){
   g.querySelectorAll('nav a').forEach(a=>a.onclick=ev=>{ev.preventDefault();g.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:'smooth',block:'start'})});
   m.append(g);
 }
+
+/* ============ TOOLTIPS (hover, keyboard focus, tap) ============ */
+(()=>{
+  const tip=document.getElementById('tip');let pinned=null;
+  const place=(x,y)=>{const w=tip.offsetWidth,h=tip.offsetHeight;let left=x+12,top=y+16;if(left+w>window.innerWidth-8)left=Math.max(8,window.innerWidth-w-8);if(top+h>window.innerHeight-8)top=Math.max(8,y-h-10);tip.style.left=left+'px';tip.style.top=top+'px'};
+  const show=(node,x,y)=>{tip.textContent=node.dataset.tip;tip.hidden=false;place(x,y)};
+  const hide=()=>{if(!pinned){tip.hidden=true}};
+  const find=e=>e.target&&e.target.closest?e.target.closest('[data-tip]'):null;
+  document.addEventListener('mouseover',e=>{const n=find(e);if(n){if(pinned&&pinned!==n)return;show(n,e.clientX,e.clientY)}else hide()});
+  document.addEventListener('mousemove',e=>{if(!tip.hidden&&!pinned)place(e.clientX,e.clientY)});
+  document.addEventListener('mouseleave',hide);
+  document.addEventListener('focusin',e=>{const n=find(e);if(n){const r=n.getBoundingClientRect();show(n,r.left,r.bottom)}});
+  document.addEventListener('focusout',hide);
+  document.addEventListener('touchstart',e=>{const n=find(e);if(n&&n!==pinned){const r=n.getBoundingClientRect();pinned=n;show(n,r.left,r.bottom);}else{pinned=null;tip.hidden=true}},{passive:true});
+  document.addEventListener('scroll',()=>{pinned=null;tip.hidden=true},{passive:true});
+})();
 
 /* ============ WIRING ============ */
 document.getElementById('lang-cs').onclick=()=>{lang='cs';render()};
