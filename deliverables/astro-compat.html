@@ -495,8 +495,7 @@ function render(){
   document.querySelectorAll('[data-i]').forEach(n=>n.textContent=t(n.dataset.i));
   document.getElementById('lang-cs').setAttribute('aria-pressed',lang==='cs');
   document.getElementById('lang-en').setAttribute('aria-pressed',lang==='en');
-  document.querySelectorAll('nav.tabs button').forEach(b=>{b.setAttribute('aria-selected',b.dataset.tab===tab);b.dataset.tip=tp(b.dataset.i)});
-  document.getElementById('lang-cs').dataset.tip=tp('langCs');document.getElementById('lang-en').dataset.tip=tp('langEn');
+  document.querySelectorAll('nav.tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===tab));
   document.documentElement.lang=lang;
   document.getElementById('disclaimer').textContent=(ENGINE.precise?t('engineOk'):t('engineFb'))+' '+t('disclaimer');
   const m=document.getElementById('main');m.replaceChildren();
@@ -505,14 +504,14 @@ function render(){
 }
 function personChips(current,onPick){
   const c=el('<div class="chips"></div>');
-  for(const p of people){const s=signOf(p.chart.sun);const b=el(`<button class="chip" aria-pressed="${p.id===current}"${da(tp('chip')+'\n'+bornLine(p)+'\n'+t('sun')+': '+sname(s))}><span class="dot bg-${s.el}"></span>${esc(p.name)} <span class="muted">${s.g}</span></button>`);b.onclick=()=>onPick(p.id);c.append(b)}
+  for(const p of people){const s=signOf(p.chart.sun);const b=el(`<button class="chip" aria-pressed="${p.id===current}"><span class="dot bg-${s.el}"></span>${esc(p.name)} <span class="muted">${s.g}</span></button>`);b.onclick=()=>onPick(p.id);c.append(b)}
   return c;
 }
 function bornLine(p){const dt=`${p.d}. ${p.m}. ${p.y}`;const tm=p.unknownTime?'':`, ${String(p.h).padStart(2,'0')}:${String(p.mi).padStart(2,'0')}`;return `${t('born')} ${dt}${tm}, ${placeLabel(p,false)}`}
 
 /* --- People --- */
 function renderPeople(m){
-  const top=el(`<div class="row" style="justify-content:space-between;margin-bottom:14px"><h2>${t('tab_people')} <span class="muted num" style="font-family:var(--font-body);font-size:1rem">(${people.length})</span></h2><div class="row"><button class="btn ghost" id="restore"${da(tp('restore'))}>${t('restore')}</button><button class="btn primary" id="add"${da(tp('add'))}>${t('add')}</button></div></div>`);
+  const top=el(`<div class="row" style="justify-content:space-between;margin-bottom:14px"><h2>${t('tab_people')} <span class="muted num" style="font-family:var(--font-body);font-size:1rem">(${people.length})</span></h2><div class="row"><button class="btn ghost" id="restore">${t('restore')}</button><button class="btn primary" id="add">${t('add')}</button></div></div>`);
   top.querySelector('#add').onclick=()=>{editing={};picked=null;manual=false;formErr='';render()};
   top.querySelector('#restore').onclick=()=>{for(const s of SAMPLES)if(!people.find(p=>p.id===s.id))people.push({...s});render()};
   m.append(top);
@@ -525,7 +524,7 @@ function renderPeople(m){
     const card=el(`<div class="card person"><div class="name"><h3>${esc(p.name)}</h3>${p.sample?`<span class="sample"${da(tp('sample'))}>${t('sample')}</span>`:''}</div>
       <p class="small muted">${esc(bornLine(p))}</p>
       <div class="big3"><span class="pill"${da(t('sun')+': '+M.sun+'\n'+signTip(s))}><span class="g el-${s.el}">${s.g}</span>${t('sun')}: ${sname(s)}</span><span class="pill"${da(t('moon')+': '+M.moon+'\n'+signTip(mo))}><span class="g el-${mo.el}">${mo.g}</span>${t('moon')}: ${sname(mo)}</span><span class="pill"${da(t('asc')+': '+M.asc+'\n'+signTip(as))}><span class="g el-${as.el}">${as.g}</span>AC: ${sname(as)}</span></div>
-      <div class="actions"><button class="btn" data-a="chart"${da(tp('btnChart'))}>${t('tab_chart')}</button><button class="btn" data-a="edit"${da(tp('btnEdit'))}>${t('edit')}</button><button class="btn danger" data-a="del"${da(tp('btnDel'))}>${t('del')}</button></div></div>`);
+      <div class="actions"><button class="btn" data-a="chart">${t('tab_chart')}</button><button class="btn" data-a="edit">${t('edit')}</button><button class="btn danger" data-a="del">${t('del')}</button></div></div>`);
     card.querySelector('[data-a=chart]').onclick=()=>{sel=p.id;tab='chart';render()};
     card.querySelector('[data-a=edit]').onclick=()=>{editing={...p};picked=p.place&&p.cc?{place:p.place,admin:p.admin,cc:p.cc,lat:p.lat,lon:p.lon,tz:p.tz}:null;manual=!picked;formErr='';render();window.scrollTo({top:0})};
     card.querySelector('[data-a=del]').onclick=e=>{const b=e.currentTarget;if(b.dataset.c){people=people.filter(x=>x.id!==p.id);render()}else{b.dataset.c='1';b.textContent=t('confirmDel')}};
@@ -539,14 +538,14 @@ function renderForm(){
   const timeVal=e.y&&!e.unknownTime?`${String(e.h).padStart(2,'0')}:${String(e.mi).padStart(2,'0')}`:'';
   const tzOpts=TZS_ALL().map(z=>`<option value="${z}" ${(e.tz||'Europe/Prague')===z?'selected':''}>${z}</option>`).join('');
   const f=el(`<form class="edit card" style="margin-bottom:18px" autocomplete="off">
-    <label class="f full"${da(tp('fName'))}>${t('name')}<input id="f-name" required value="${esc(e.name||'')}"></label>
-    <label class="f"${da(tp('fDate'))}>${t('date')}<input id="f-date" type="date" required value="${dateVal}" min="1900-01-01" max="2100-12-31"></label>
-    <label class="f"${da(tp('fTime'))}>${t('time')}<input id="f-time" type="time" value="${timeVal}" ${e.unknownTime?'disabled':''}></label>
-    <label class="chk full"${da(tp('fUnk'))}><input id="f-unk" type="checkbox" ${e.unknownTime?'checked':''}> ${t('unknownTime')}</label>
+    <label class="f full">${t('name')}<input id="f-name" required value="${esc(e.name||'')}"></label>
+    <label class="f">${t('date')}<input id="f-date" type="date" required value="${dateVal}" min="1900-01-01" max="2100-12-31"></label>
+    <label class="f">${t('time')}<input id="f-time" type="time" value="${timeVal}" ${e.unknownTime?'disabled':''}></label>
+    <label class="chk full"><input id="f-unk" type="checkbox" ${e.unknownTime?'checked':''}> ${t('unknownTime')}</label>
     <div class="full place" id="search-block" ${manual?'hidden':''}>
-      <label class="f"${da(tp('fPlace'))}>${t('place')}<input id="f-q" placeholder="${esc(t('placeHint'))}" value=""></label>
+      <label class="f">${t('place')}<input id="f-q" placeholder="${esc(t('placeHint'))}" value=""></label>
       <div class="suggest" id="sug" hidden></div>
-      <div class="row" style="justify-content:space-between;margin-top:6px"><div class="picked" id="picked"></div><button type="button" class="linkbtn" id="to-manual"${da(tp('fManual'))}>${t('manual')}</button></div>
+      <div class="row" style="justify-content:space-between;margin-top:6px"><div class="picked" id="picked"></div><button type="button" class="linkbtn" id="to-manual">${t('manual')}</button></div>
       <p class="small muted" id="places-note" style="margin-top:4px">${placesReady?t('placesLoaded').replace('{n}',PLACES.p.length.toLocaleString(lang)):t('placesSeed')}</p>
     </div>
     <div class="full" id="manual-block" ${manual?'':'hidden'}>
@@ -615,7 +614,7 @@ function renderChart(m){
   if(!people.length){m.append(el(`<div class="card empty">${t('empty')}</div>`));return}
   m.append(personChips(sel,id=>{sel=id;render()}));
   const p=people.find(x=>x.id===sel),c=p.chart;
-  const head=el(`<div class="row" style="justify-content:space-between;margin-bottom:14px"><div><h2>${esc(p.name)}</h2><p class="muted small">${esc(bornLine(p))}${p.unknownTime?` · ${t('unknownTime').split('(')[0].trim()}`:''}</p></div><label class="hsel"${da(tp('hsys'))}>${t('houseSystem')} <select id="hsys"><option value="placidus" ${hsys==='placidus'?'selected':''}>${t('placidus')}</option><option value="equal" ${hsys==='equal'?'selected':''}>${t('equal')}</option></select>${c.system==='equal'&&hsys==='placidus'?`<span class="muted">(${t('equalForced')})</span>`:''}</label></div>`);
+  const head=el(`<div class="row" style="justify-content:space-between;margin-bottom:14px"><div><h2>${esc(p.name)}</h2><p class="muted small">${esc(bornLine(p))}${p.unknownTime?` · ${t('unknownTime').split('(')[0].trim()}`:''}</p></div><label class="hsel">${t('houseSystem')} <select id="hsys"><option value="placidus" ${hsys==='placidus'?'selected':''}>${t('placidus')}</option><option value="equal" ${hsys==='equal'?'selected':''}>${t('equal')}</option></select>${c.system==='equal'&&hsys==='placidus'?`<span class="muted">(${t('equalForced')})</span>`:''}</label></div>`);
   head.querySelector('#hsys').onchange=ev=>{hsys=ev.target.value;for(const x of people)delete x.chart;render()};
   m.append(head);
   const wrap=el('<div class="chart-wrap"></div>');
@@ -656,7 +655,7 @@ function renderCompat(m){
   if(people.length<2){m.append(el(`<div class="card empty">${t('needTwo')}</div>`));return}
   let [a,b]=pairSel;if(!people.find(p=>p.id===a))a=people[0].id;if(!people.find(p=>p.id===b)||b===a)b=people.find(p=>p.id!==a).id;pairSel=[a,b];
   const opts=id=>people.map(p=>`<option value="${p.id}" ${p.id===id?'selected':''}>${esc(p.name)} ${signOf(p.chart.sun).g}</option>`).join('');
-  const pick=el(`<div class="card pair-pick" style="margin-bottom:18px"><label class="f"${da(tp('pick'))}>${t('pickTwo')}<select id="pa">${opts(a)}</select></label><div class="vs">×</div><label class="f"${da(tp('pick'))}>&nbsp;<select id="pb">${opts(b)}</select></label></div>`);
+  const pick=el(`<div class="card pair-pick" style="margin-bottom:18px"><label class="f">${t('pickTwo')}<select id="pa">${opts(a)}</select></label><div class="vs">×</div><label class="f">&nbsp;<select id="pb">${opts(b)}</select></label></div>`);
   pick.querySelector('#pa').onchange=e=>{pairSel=[e.target.value,pairSel[1]];render()};
   pick.querySelector('#pb').onchange=e=>{pairSel=[pairSel[0],e.target.value];render()};
   m.append(pick);
@@ -682,7 +681,7 @@ function renderMatrix(m){
   for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){sc[i][j]=sc[j][i]=compat(people[i],people[j]).score}
   let h=`<table class="mx"><thead><tr><th${da(tp('matrixHdr'))}></th>${people.map(p=>`<th class="col"${da(bornLine(p))}>${esc(p.name)}</th>`).join('')}</tr></thead><tbody>`;
   for(let i=0;i<n;i++){h+=`<tr><th${da(bornLine(people[i])+'\n'+t('sun')+': '+sname(signOf(people[i].chart.sun)))}>${esc(people[i].name)} <span class="muted">${signOf(people[i].chart.sun).g}</span></th>`;
-    for(let j=0;j<n;j++){if(i===j){h+='<td class="self">—</td>';continue}const v=sc[i][j],p=Math.round(Math.max(0,(v-10))/85*100);h+=`<td class="${v>=60?'hi':''}" data-i="${i}" data-j="${j}" style="background:color-mix(in oklab,var(--accent) ${p}%,var(--surface-2))" tabindex="0"${da(`${people[i].name} × ${people[j].name}: ${v} · ${verdict(v)}\n${t('matrixNote')}`)}>${v}</td>`}
+    for(let j=0;j<n;j++){if(i===j){h+='<td class="self">—</td>';continue}const v=sc[i][j],p=Math.round(Math.max(0,(v-10))/85*100);h+=`<td class="${v>=60?'hi':''}" data-i="${i}" data-j="${j}" style="background:color-mix(in oklab,var(--accent) ${p}%,var(--surface-2))" tabindex="0">${v}</td>`}
     h+='</tr>'}
   h+='</tbody></table>';
   const card=el(`<div class="card"><div class="matrix-wrap">${h}</div><div class="legend"${da(tp('verdict'))}><span>${t('low')}</span><span class="ramp"></span><span>${t('high')}</span></div></div>`);
@@ -718,7 +717,7 @@ function renderGuide(m){
   document.addEventListener('mouseleave',hide);
   document.addEventListener('focusin',e=>{const n=find(e);if(n){const r=n.getBoundingClientRect();show(n,r.left,r.bottom)}});
   document.addEventListener('focusout',hide);
-  document.addEventListener('touchstart',e=>{const n=find(e);if(n&&n!==pinned){const r=n.getBoundingClientRect();pinned=n;show(n,r.left,r.bottom);}else{pinned=null;tip.hidden=true}},{passive:true});
+  let timer=null;document.addEventListener('touchstart',e=>{const n=find(e);clearTimeout(timer);if(n&&n!==pinned){const r=n.getBoundingClientRect();pinned=n;show(n,r.left,r.bottom);timer=setTimeout(()=>{pinned=null;tip.hidden=true},4000)}else{pinned=null;tip.hidden=true}},{passive:true});
   document.addEventListener('scroll',()=>{pinned=null;tip.hidden=true},{passive:true});
 })();
 
